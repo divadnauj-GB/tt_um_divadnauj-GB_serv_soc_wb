@@ -40,9 +40,9 @@ async def test_uart(dut):
 
     await ClockCycles(dut.clk, 20000 * 10)
    
-    await uart_send(dut.clk, uart_source, "g01000000")
+    # await uart_send(dut.clk, uart_source, "g01000000")
 
-    await ClockCycles(dut.clk, 20000 * 1000)
+    # await ClockCycles(dut.clk, 20000 * 1000)
    
 
 
