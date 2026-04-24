@@ -7,14 +7,15 @@ You can also include images in this folder and reference them in the markdown. E
 512 kb in size, and the combined size of all images must be less than 1 MB.
 -->
 
-## How it works
+## SERV SoC
 
-Explain how your project works
+This is a custom implementation of a SERV processor under the RV32E architecture. The processors uses Wishbone to interact with memoery and peripherals.
+
 
 ## How to test
 
-Explain how to use your project
+Connect the FLASH and RAM memoeries to the SPI port.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+This project requires an external SPI Flash/Ram memory. The project ahs been proven using QPMOD. You also need to connect an USB to Serial conversor to interact with the system. 

@@ -1,40 +1,49 @@
-# SPDX-FileCopyrightText: © 2024 Tiny Tapeout
-# SPDX-License-Identifier: Apache-2.0
-
 import cocotb
 from cocotb.clock import Clock
+from cocotb.types import LogicArray
 from cocotb.triggers import ClockCycles
+from cocotbext.uart import UartSource, UartSink
+from cocotb.triggers import RisingEdge, FallingEdge
+import logging
+logging.getLogger("cocotb.tb.uart0_tx").setLevel(logging.WARNING)
+logging.getLogger("cocotb.tb.uart0_rx").setLevel(logging.WARNING)
 
+
+#logging.basicConfig(level=logging.DEBUG)
+
+async def uart_send(clk,dev, msg=[]):
+    for d in msg:
+        await dev.write(f"{d}".encode())
+        await ClockCycles(clk, 10500)
+    await ClockCycles(clk, 50500)
+
+
+class monitor_uart():
+    def __init__(self,tx):
+        self.uart_sink = UartSink(tx, baud=115200, bits=8)
+
+    async def start(self):
+        while True:
+            ch = await self.uart_sink.read()
+            print(ch.decode("utf-8"), end="")
+            with open("FreeRTOs.txt","a") as fp:
+                fp.write(ch.decode("utf-8"))
 
 @cocotb.test()
-async def test_project(dut):
-    dut._log.info("Start")
-
-    # Set the clock period to 10 us (100 KHz)
-    clock = Clock(dut.clk, 10, unit="us")
-    cocotb.start_soon(clock.start())
-
-    # Reset
-    dut._log.info("Reset")
-    dut.ena.value = 1
-    dut.ui_in.value = 0
-    dut.uio_in.value = 0
-    dut.rst_n.value = 0
+async def test_uart(dut):
+    dut._log.setLevel(logging.DEBUG)
+    clock = dut.clk
+    uart_source = UartSource(dut.uart0_rx, baud=115200, bits=8)
+    uart_monitor = monitor_uart(dut.uart0_tx)
+    cocotb.start_soon(uart_monitor.start())
     await ClockCycles(dut.clk, 10)
-    dut.rst_n.value = 1
 
-    dut._log.info("Test project behavior")
+    await ClockCycles(dut.clk, 20000 * 10)
+   
+    await uart_send(dut.clk, uart_source, "g01000000")
 
-    # Set the input values you want to test
-    dut.ui_in.value = 20
-    dut.uio_in.value = 30
+    await ClockCycles(dut.clk, 20000 * 1000)
+   
 
-    # Wait for one clock cycle to see the output values
-    await ClockCycles(dut.clk, 1)
 
-    # The following assersion is just an example of how to check the output values.
-    # Change it to match the actual expected output of your module:
-    assert dut.uo_out.value == 50
 
-    # Keep testing the module by changing the input values, waiting for
-    # one or more clock cycles, and asserting the expected output values.
