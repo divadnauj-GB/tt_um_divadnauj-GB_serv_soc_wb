@@ -93,14 +93,14 @@ module serv_rf_top
 
    wire 	      rf_wreq;
    wire 	      rf_rreq;
-   wire [4+WITH_CSR:0] wreg0;
-   wire [4+WITH_CSR:0] wreg1;
+   wire [4+WITH_CSR-EMBEDDED:0] wreg0;
+   wire [4+WITH_CSR-EMBEDDED:0] wreg1;
    wire 	      wen0;
    wire 	      wen1;
    wire [W-1:0]	      wdata0;
    wire [W-1:0]	      wdata1;
-   wire [4+WITH_CSR:0] rreg0;
-   wire [4+WITH_CSR:0] rreg1;
+   wire [4+WITH_CSR-EMBEDDED:0] rreg0;
+   wire [4+WITH_CSR-EMBEDDED:0] rreg1;
    wire 	      rf_ready;
    wire [W-1:0]	      rdata0;
    wire [W-1:0]	      rdata1;

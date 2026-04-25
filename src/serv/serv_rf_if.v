@@ -13,14 +13,14 @@ module serv_rf_if
   )
   (//RF Interface
    input wire 		      i_cnt_en,
-   output wire [4+WITH_CSR:0] o_wreg0,
-   output wire [4+WITH_CSR:0] o_wreg1,
+   output wire [4+WITH_CSR-EMBEDDED:0] o_wreg0,
+   output wire [4+WITH_CSR-EMBEDDED:0] o_wreg1,
    output wire 		      o_wen0,
    output wire 		      o_wen1,
    output wire [B:0]  o_wdata0,
    output wire [B:0]  o_wdata1,
-   output wire [4+WITH_CSR:0] o_rreg0,
-   output wire [4+WITH_CSR:0] o_rreg1,
+   output wire [4+WITH_CSR-EMBEDDED:0] o_rreg0,
+   output wire [4+WITH_CSR-EMBEDDED:0] o_rreg1,
    input wire  [B:0] i_rdata0,
    input wire  [B:0] i_rdata1,
 
