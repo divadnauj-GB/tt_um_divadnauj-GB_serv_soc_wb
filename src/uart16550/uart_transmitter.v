@@ -205,7 +205,7 @@ localparam s_send_parity = 3'd3;
 localparam s_send_stop   = 3'd4;
 localparam s_pop_byte    = 3'd5;
 
-always @(posedge clk or posedge wb_rst_i)
+always @(posedge clk)
 begin
   if (wb_rst_i)
   begin
