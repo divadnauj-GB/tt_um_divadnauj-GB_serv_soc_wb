@@ -17,7 +17,7 @@ module tt_um_divadnauj_GB_serv_rv32e (
 );
 
     wire wb_clk;
-	reg wb_rst;
+	wire wb_rst;
 
 	wire w_sio0_si_mosi_i;
 	wire w_sio1_so_miso_i;
