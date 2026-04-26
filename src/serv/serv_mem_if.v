@@ -13,6 +13,7 @@ module serv_mem_if
   )
   (
    input wire 	     i_clk,
+   input wire        i_rst,
    //State
    input wire [1:0]  i_bytecnt,
    input wire [1:0]  i_lsb,
@@ -44,9 +45,14 @@ module serv_mem_if
    assign o_wb_sel[1] = (i_lsb == 2'b01) | i_word | (i_half & !i_lsb[1]);
    assign o_wb_sel[0] = (i_lsb == 2'b00);
 
-   always @(posedge i_clk) begin
-      if (dat_valid)
-        signbit <= i_bufreg2_q[B];
+   always @(posedge i_clk, posedge i_rst) begin
+      if (i_rst) begin
+        signbit <= 0;
+      end else begin
+        if (dat_valid)
+          signbit <= i_bufreg2_q[B];
+      end
+      
    end
 
    /*

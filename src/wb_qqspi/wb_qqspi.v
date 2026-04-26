@@ -67,6 +67,7 @@ module wb_qqspi#(
     end
    */
 
+
     qqspi #(
       .CHIP_SELECTS(CHIP_SELECTS)
     ) qqspi_I (

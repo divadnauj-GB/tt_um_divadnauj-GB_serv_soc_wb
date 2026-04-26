@@ -12,6 +12,7 @@ module serv_bufreg2
     parameter B=W-1)
   (
    input wire	      i_clk,
+   input wire         i_rst,
    //State
    input wire	      i_en,
    input wire	      i_init,
@@ -97,11 +98,16 @@ module serv_bufreg2
 
    assign o_dat = {dhi,dlo};
 
-   always @(posedge i_clk) begin
-      if (shift_en | cnt_en | i_load)
-	dhi <= i_load ? i_dat[31:24] : dat_shamt & {2'b11, !(i_shift_op & i_cnt7 & !cnt_en), 5'b11111};
-      if (shift_en | i_load)
-	dlo <= i_load ? i_dat[23:0] : {dhi[B:0], dlo[23:W]};
+   always @(posedge i_clk, posedge i_rst) begin
+        if (i_rst) begin
+            dhi <= 0; 
+            dlo <= 0;
+        end else begin
+            if (shift_en | cnt_en | i_load)
+                dhi <= i_load ? i_dat[31:24] : dat_shamt & {2'b11, !(i_shift_op & i_cnt7 & !cnt_en), 5'b11111};
+            if (shift_en | i_load)
+                dlo <= i_load ? i_dat[23:0] : {dhi[B:0], dlo[23:W]};     
+        end
    end
 
 endmodule

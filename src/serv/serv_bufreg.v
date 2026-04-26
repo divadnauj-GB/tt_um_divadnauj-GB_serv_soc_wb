@@ -12,6 +12,7 @@ module serv_bufreg #(
       parameter B = W-1
 )(
    input wire 	      i_clk,
+   input wire        i_rst,
    //State
    input wire 	      i_cnt0,
    input wire 	      i_cnt1,
@@ -53,20 +54,29 @@ module serv_bufreg #(
 
    assign {c,q} = {1'b0,(i_rs1 & {W{i_rs1_en}})} + {1'b0,(i_imm & {W{i_imm_en}} & ~clr_lsb)} + c_r;
 
-   always @(posedge i_clk) begin
+   always @(posedge i_clk, posedge i_rst) begin
       //Make sure carry is cleared before loading new data
-      c_r    <= {W{1'b0}};
-      c_r[0] <= c & i_en;
+      if (i_rst) begin
+         c_r    <= 0;
+      end else begin
+         c_r    <= {W{1'b0}};
+         c_r[0] <= c & i_en;
+      end
    end
 
    generate
       if (W == 1) begin : gen_w_eq_1
-	 always @(posedge i_clk) begin
-	    if (i_en)
-	      data[31:2] <= {i_init ? q : {W{data[31] & i_sh_signed}}, data[31:3]};
+	 always @(posedge i_clk, posedge i_rst) begin
+      if (i_rst) begin
+         data <= 0;
+      end else begin
+         if (i_en)
+	         data[31:2] <= {i_init ? q : {W{data[31] & i_sh_signed}}, data[31:3]};
 
-	    if (i_init ? (i_cnt0 | i_cnt1) : i_en)
-	      data[1:0] <= {i_init ? q : data[2], data[1]};
+         if (i_init ? (i_cnt0 | i_cnt1) : i_en)
+            data[1:0] <= {i_init ? q : data[2], data[1]};
+         
+      end
 	 end
 	 assign o_lsb = (MDU & i_mdu_op) ? 2'b00 : data[1:0];
 	 assign o_q = data[0] & {W{i_en}};
@@ -79,13 +89,19 @@ module serv_bufreg #(
 	     i_right_shift_op ? (3'd3+{1'b0,i_shamt[1:0]}) :
 	     ({1'b0,~i_shamt[1:0]});
 
-	 always @(posedge i_clk) begin
-            if (i_en)
+	 always @(posedge i_clk, posedge i_rst) begin
+      if (i_rst) begin
+         lsb <= 0;
+         data <= 0;
+         data_tail <= 0;
+      end else begin
+       if (i_en)
               if (i_cnt0) lsb <= q[1:0];
 	    if (i_en)
               data <= {i_init ? q : {W{i_sh_signed & data[31]}}, data[31:W]};
 	    if (i_en)
 	      data_tail <= data[B:1] & {B{~i_cnt_done}};
+      end
 	 end
 
 	 wire [2*W+B-2:0] muxdata = {data[W+B-1:0],data_tail};

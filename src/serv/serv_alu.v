@@ -12,6 +12,7 @@ module serv_alu
   )
   (
    input wire 	    clk,
+   input wire      rst,
    //State
    input wire 	    i_en,
    input wire 	    i_cnt0,
@@ -76,12 +77,16 @@ module serv_alu
                  ({W{i_rd_sel[1]}} & result_slt) |
                  ({W{i_rd_sel[2]}} & result_bool);
 
-   always @(posedge clk) begin
-      add_cy_r    <= {W{1'b0}};
-      add_cy_r[0] <= i_en ? add_cy : i_sub;
-
-      if (i_en)
-	cmp_r <= o_cmp;
+   always @(posedge clk, posedge rst) begin
+      if(rst) begin
+         add_cy_r <= 0;
+         cmp_r <= 0;
+      end else begin
+         add_cy_r    <= {W{1'b0}};
+         add_cy_r[0] <= i_en ? add_cy : i_sub;
+         if (i_en)
+	         cmp_r <= o_cmp;
+      end
    end
 
 endmodule

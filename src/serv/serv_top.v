@@ -7,17 +7,17 @@
 `default_nettype none
 
 module serv_top
-  #(parameter	    WITH_CSR = 1,
-    parameter	    W = 1,
-    parameter	    B = W-1,
-    parameter	    PRE_REGISTER = 1,
-    parameter	    RESET_STRATEGY = "MINI",
-    parameter	    RESET_PC = 32'd0,
+  #(parameter	WITH_CSR = 1,
+    parameter	W = 1,
+    parameter	B = W-1,
+    parameter	PRE_REGISTER = 1,
+    parameter	RESET_STRATEGY = "MINI",
+    parameter	RESET_PC = 32'd0,
     parameter	EMBEDDED = 0,
-    parameter [0:0] DEBUG = 1'b0,
-    parameter [0:0] MDU = 1'b0,
-    parameter [0:0] COMPRESSED=0,
-    parameter [0:0] ALIGN = COMPRESSED)
+    parameter DEBUG = 0,
+    parameter MDU = 0,
+    parameter COMPRESSED=0,
+    parameter ALIGN = COMPRESSED)
    (
    input wire 		      clk,
    input wire 		      i_rst,
@@ -219,6 +219,7 @@ module serv_top
          serv_compdec compdec
            (
             .i_clk(clk),
+            .i_rst(i_rst),
             .i_instr(wb_ibus_rdt),
             .i_ack(wb_ibus_ack),
             .o_instr(i_wb_rdt),
@@ -231,7 +232,7 @@ module serv_top
 
    serv_state
      #(.RESET_STRATEGY (RESET_STRATEGY),
-       .WITH_CSR (WITH_CSR[0:0]),
+       .WITH_CSR (WITH_CSR),
        .MDU(MDU),
        .ALIGN(ALIGN),
        .W(W))
@@ -296,6 +297,7 @@ module serv_top
    decode
      (
       .clk (clk),
+      .i_rst(i_rst),
       //Input
       .i_wb_rdt           (i_wb_rdt[31:2]),
       .i_wb_en            (wb_ibus_ack),
@@ -358,6 +360,7 @@ module serv_top
    serv_immdec #(.W (W)) immdec
      (
       .i_clk        (clk),
+      .i_rst        (i_rst),
       //State
       .i_cnt_en     (cnt_en),
       .i_cnt_done   (cnt_done),
@@ -381,6 +384,7 @@ module serv_top
    bufreg
      (
       .i_clk    (clk),
+      .i_rst    (i_rst),
       //State
       .i_cnt0   (cnt0),
       .i_cnt1   (cnt1),
@@ -408,6 +412,7 @@ module serv_top
    serv_bufreg2 #(.W(W)) bufreg2
      (
       .i_clk        (clk),
+      .i_rst        (i_rst),
       //State
       .i_en         (cnt_en),
       .i_init       (init),
@@ -464,6 +469,7 @@ module serv_top
    serv_alu #(.W (W)) alu
      (
       .clk        (clk),
+      .rst        (i_rst),
       //State
       .i_en       (cnt_en),
       .i_cnt0     (cnt0),
@@ -532,11 +538,12 @@ module serv_top
       .o_csr       (rf_csr_out));
 
    serv_mem_if
-     #(.WITH_CSR (WITH_CSR[0:0]),
+     #(.WITH_CSR (WITH_CSR),
        .W (W))
    mem_if
      (
       .i_clk        (clk),
+      .i_rst        (i_rst),
       //State
       .i_bytecnt    (mem_bytecnt),
       .i_lsb        (lsb),

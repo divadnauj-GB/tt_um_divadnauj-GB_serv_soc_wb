@@ -7,9 +7,9 @@
 `default_nettype none
 module serv_csr
   #(
-    parameter RESET_STRATEGY = "MINI",
-    parameter W = 1,
-    parameter B = W-1
+	parameter RESET_STRATEGY = "MINI",
+	parameter W = 1,
+	parameter B = W-1
   )
   (
    input wire 	    i_clk,
@@ -45,10 +45,10 @@ module serv_csr
    output wire 	[B:0]    o_q);
 
    localparam [1:0]
-     CSR_SOURCE_CSR = 2'b00,
-     CSR_SOURCE_EXT = 2'b01,
-     CSR_SOURCE_SET = 2'b10,
-     CSR_SOURCE_CLR = 2'b11;
+	 CSR_SOURCE_CSR = 2'b00,
+	 CSR_SOURCE_EXT = 2'b01,
+	 CSR_SOURCE_SET = 2'b10,
+	 CSR_SOURCE_CLR = 2'b11;
 
    reg 		    mstatus_mie;
    reg 		    mstatus_mpie;
@@ -74,16 +74,16 @@ module serv_csr
    wire [B:0]	mstatus;
 
    generate
-      if (W==1) begin : gen_mstatus_w1
+	  if (W==1) begin : gen_mstatus_w1
 	 assign mstatus = ((mstatus_mie & i_cnt3) | (i_cnt11 | i_cnt12));
-      end else if (W==4) begin : gen_mstatus_w4
+	  end else if (W==4) begin : gen_mstatus_w4
 	 assign mstatus = {i_cnt11 | (mstatus_mie & i_cnt3), 2'b00, i_cnt12};
-      end
+	  end
    endgenerate
 
    assign csr_out = ({W{i_mstatus_en & i_en}} & mstatus) |
-		    i_rf_csr_out |
-		    ({W{i_mcause_en & i_en}} & mcause);
+			i_rf_csr_out |
+			({W{i_mcause_en & i_en}} & mcause);
 
    assign o_q = csr_out;
 
@@ -95,70 +95,75 @@ module serv_csr
 
    assign o_csr_in = csr_in;
 
-   always @(posedge i_clk) begin
-      if (i_trig_irq) begin
-	 timer_irq_r <= timer_irq;
-	 o_new_irq   <= timer_irq & !timer_irq_r;
-      end
+   always @(posedge i_clk, posedge i_rst) begin
+	  if (i_rst) begin
+			o_new_irq <= 1'b0;
+			mie_mtie <= 1'b0;
+			timer_irq_r <= 0;
+			mstatus_mie <= 0;
+			mstatus_mpie <= 0;
+			mcause3_0 <= 0;
+			mcause31 <= 0;
+	  end else begin
+			if (i_trig_irq) begin
+				timer_irq_r <= timer_irq;
+				o_new_irq   <= timer_irq & !timer_irq_r;
+			end
 
-      if (i_mie_en & i_cnt7)
-	mie_mtie <= csr_in[B];
+			if (i_mie_en & i_cnt7)
+				mie_mtie <= csr_in[B];
 
-      /*
-       The mie bit in mstatus gets updated under three conditions
+			/*
+			The mie bit in mstatus gets updated under three conditions
 
-       When a trap is taken, the bit is cleared
-       During an mret instruction, the bit is restored from mpie
-       During a mstatus CSR access instruction it's assigned when
-        bit 3 gets updated
+			When a trap is taken, the bit is cleared
+			During an mret instruction, the bit is restored from mpie
+			During a mstatus CSR access instruction it's assigned when
+				bit 3 gets updated
 
-       These conditions are all mutually exclusive
-       */
-      if ((i_trap & i_cnt_done) | i_mstatus_en & i_cnt3 & i_en | i_mret)
-	mstatus_mie <= !i_trap & (i_mret ?  mstatus_mpie : csr_in[B]);
+			These conditions are all mutually exclusive
+			*/
+			if ((i_trap & i_cnt_done) | i_mstatus_en & i_cnt3 & i_en | i_mret)
+				mstatus_mie <= !i_trap & (i_mret ?  mstatus_mpie : csr_in[B]);
 
-      /*
-       Note: To save resources mstatus_mpie (mstatus bit 7) is not
-       readable or writable from sw
-       */
-      if (i_trap & i_cnt_done)
-	mstatus_mpie <= mstatus_mie;
+			/*
+			Note: To save resources mstatus_mpie (mstatus bit 7) is not
+			readable or writable from sw
+			*/
+			if (i_trap & i_cnt_done)
+				mstatus_mpie <= mstatus_mie;
 
-      /*
-       The four lowest bits in mcause hold the exception code
+			/*
+			The four lowest bits in mcause hold the exception code
 
-       These bits get updated under three conditions
+			These bits get updated under three conditions
 
-       During an mcause CSR access function, they are assigned when
-       bits 0 to 3 gets updated
+			During an mcause CSR access function, they are assigned when
+			bits 0 to 3 gets updated
 
-       During an external interrupt the exception code is set to
-       7, since SERV only support timer interrupts
+			During an external interrupt the exception code is set to
+			7, since SERV only support timer interrupts
 
-       During an exception, the exception code is assigned to indicate
-       if it was caused by an ebreak instruction (3),
-       ecall instruction (11), misaligned load (4), misaligned store (6)
-       or misaligned jump (0)
+			During an exception, the exception code is assigned to indicate
+			if it was caused by an ebreak instruction (3),
+			ecall instruction (11), misaligned load (4), misaligned store (6)
+			or misaligned jump (0)
 
-       The expressions below are derived from the following truth table
-       irq  => 0111 (timer=7)
-       e_op => x011 (ebreak=3, ecall=11)
-       mem  => 01x0 (store=6, load=4)
-       ctrl => 0000 (jump=0)
-       */
-      if (i_mcause_en & i_en & i_cnt0to3 | (i_trap & i_cnt_done)) begin
-	 mcause3_0[3] <= (i_e_op & !i_ebreak) | (!i_trap & csr_in[B]);
-	 mcause3_0[2] <= o_new_irq | i_mem_op | (!i_trap & ((W == 1) ? mcause3_0[3] : csr_in[(W == 1) ? 0 : 2]));
-	 mcause3_0[1] <= o_new_irq | i_e_op | (i_mem_op & i_mem_cmd) | (!i_trap & ((W == 1) ? mcause3_0[2] : csr_in[(W == 1) ? 0 : 1]));
-	 mcause3_0[0] <= o_new_irq | i_e_op | (!i_trap & ((W == 1) ? mcause3_0[1] : csr_in[0]));
-      end
-      if (i_mcause_en & i_cnt_done | i_trap)
-	mcause31 <= i_trap ? o_new_irq : csr_in[B];
-      if (i_rst)
-	if (RESET_STRATEGY != "NONE") begin
-	   o_new_irq <= 1'b0;
-	   mie_mtie <= 1'b0;
-	end
+			The expressions below are derived from the following truth table
+			irq  => 0111 (timer=7)
+			e_op => x011 (ebreak=3, ecall=11)
+			mem  => 01x0 (store=6, load=4)
+			ctrl => 0000 (jump=0)
+			*/
+			if (i_mcause_en & i_en & i_cnt0to3 | (i_trap & i_cnt_done)) begin
+				mcause3_0[3] <= (i_e_op & !i_ebreak) | (!i_trap & csr_in[B]);
+				mcause3_0[2] <= o_new_irq | i_mem_op | (!i_trap & ((W == 1) ? mcause3_0[3] : csr_in[(W == 1) ? 0 : 2]));
+				mcause3_0[1] <= o_new_irq | i_e_op | (i_mem_op & i_mem_cmd) | (!i_trap & ((W == 1) ? mcause3_0[2] : csr_in[(W == 1) ? 0 : 1]));
+				mcause3_0[0] <= o_new_irq | i_e_op | (!i_trap & ((W == 1) ? mcause3_0[1] : csr_in[0]));
+			end
+			if (i_mcause_en & i_cnt_done | i_trap)
+				mcause31 <= i_trap ? o_new_irq : csr_in[B];
+	  end
    end
 
 endmodule

@@ -10,6 +10,7 @@ module serv_decode
     parameter MDU = 0)
   (
    input wire        clk,
+   input wire        i_rst,
    //Input
    input wire [31:2] i_wb_rdt,
    input wire        i_wb_en,
@@ -239,17 +240,28 @@ module serv_decode
    generate
       if (PRE_REGISTER==1) begin : gen_pre_register
 
-         always @(posedge clk) begin
-            if (i_wb_en) begin
-               funct3 <= i_wb_rdt[14:12];
-               imm30  <= i_wb_rdt[30];
-               imm25  <= i_wb_rdt[25];
-               opcode <= i_wb_rdt[6:2];
-               op20   <= i_wb_rdt[20];
-               op21   <= i_wb_rdt[21];
-               op22   <= i_wb_rdt[22];
-               op26   <= i_wb_rdt[26];
-            end
+         always @(posedge clk, posedge i_rst) begin
+            if (i_rst) begin
+               funct3 <=  0;
+               imm30  <=  0;
+               imm25  <=  0;
+               opcode <=  0;
+               op20   <=  0;
+               op21   <=  0;
+               op22   <=  0;
+               op26   <=  0;
+            end else begin
+               if (i_wb_en) begin
+                  funct3 <= i_wb_rdt[14:12];
+                  imm30  <= i_wb_rdt[30];
+                  imm25  <= i_wb_rdt[25];
+                  opcode <= i_wb_rdt[6:2];
+                  op20   <= i_wb_rdt[20];
+                  op21   <= i_wb_rdt[21];
+                  op22   <= i_wb_rdt[22];
+                  op26   <= i_wb_rdt[26];
+               end
+            end            
          end
 
          always @(*) begin
@@ -312,52 +324,99 @@ module serv_decode
             op26    = i_wb_rdt[26];
          end
 
-         always @(posedge clk) begin
-            if (i_wb_en) begin
-               o_sh_right         <= co_sh_right;
-               o_bne_or_bge       <= co_bne_or_bge;
-               o_cond_branch      <= co_cond_branch;
-               o_e_op             <= co_e_op;
-               o_ebreak           <= co_ebreak;
-               o_two_stage_op     <= co_two_stage_op;
-               o_dbus_en          <= co_dbus_en;
-               o_mtval_pc         <= co_mtval_pc;
-               o_branch_op        <= co_branch_op;
-               o_shift_op         <= co_shift_op;
-               o_rd_op            <= co_rd_op;
-               o_mdu_op           <= co_mdu_op;
-               o_ext_funct3       <= co_ext_funct3;
-               o_bufreg_rs1_en    <= co_bufreg_rs1_en;
-               o_bufreg_imm_en    <= co_bufreg_imm_en;
-               o_bufreg_clr_lsb   <= co_bufreg_clr_lsb;
-               o_bufreg_sh_signed <= co_bufreg_sh_signed;
-               o_ctrl_jal_or_jalr <= co_ctrl_jal_or_jalr;
-               o_ctrl_utype       <= co_ctrl_utype;
-               o_ctrl_pc_rel      <= co_ctrl_pc_rel;
-               o_ctrl_mret        <= co_ctrl_mret;
-               o_alu_sub          <= co_alu_sub;
-               o_alu_bool_op      <= co_alu_bool_op;
-               o_alu_cmp_eq       <= co_alu_cmp_eq;
-               o_alu_cmp_sig      <= co_alu_cmp_sig;
-               o_alu_rd_sel       <= co_alu_rd_sel;
-               o_mem_signed       <= co_mem_signed;
-               o_mem_word         <= co_mem_word;
-               o_mem_half         <= co_mem_half;
-               o_mem_cmd          <= co_mem_cmd;
-               o_csr_en           <= co_csr_en;
-               o_csr_addr         <= co_csr_addr;
-               o_csr_mstatus_en   <= co_csr_mstatus_en;
-               o_csr_mie_en       <= co_csr_mie_en;
-               o_csr_mcause_en    <= co_csr_mcause_en;
-               o_csr_source       <= co_csr_source;
-               o_csr_d_sel        <= co_csr_d_sel;
-               o_csr_imm_en       <= co_csr_imm_en;
-               o_immdec_ctrl      <= co_immdec_ctrl;
-               o_immdec_en        <= co_immdec_en;
-               o_op_b_source      <= co_op_b_source;
-               o_rd_csr_en        <= co_rd_csr_en;
-               o_rd_alu_en        <= co_rd_alu_en;
-               o_rd_mem_en        <= co_rd_mem_en;
+         always @(posedge clk, posedge i_rst) begin
+            if (i_rst) begin
+               o_sh_right         <=  0;
+               o_bne_or_bge       <=  0;
+               o_cond_branch      <=  0;
+               o_e_op             <=  0;
+               o_ebreak           <=  0;
+               o_two_stage_op     <=  0;
+               o_dbus_en          <=  0;
+               o_mtval_pc         <=  0;
+               o_branch_op        <=  0;
+               o_shift_op         <=  0;
+               o_rd_op            <=  0;
+               o_mdu_op           <=  0;
+               o_ext_funct3       <=  0;
+               o_bufreg_rs1_en    <=  0;
+               o_bufreg_imm_en    <=  0;
+               o_bufreg_clr_lsb   <=  0;
+               o_bufreg_sh_signed <=  0;
+               o_ctrl_jal_or_jalr <=  0;
+               o_ctrl_utype       <=  0;
+               o_ctrl_pc_rel      <=  0;
+               o_ctrl_mret        <=  0;
+               o_alu_sub          <=  0;
+               o_alu_bool_op      <=  0;
+               o_alu_cmp_eq       <=  0;
+               o_alu_cmp_sig      <=  0;
+               o_alu_rd_sel       <=  0;
+               o_mem_signed       <=  0;
+               o_mem_word         <=  0;
+               o_mem_half         <=  0;
+               o_mem_cmd          <=  0;
+               o_csr_en           <=  0;
+               o_csr_addr         <=  0;
+               o_csr_mstatus_en   <=  0;
+               o_csr_mie_en       <=  0;
+               o_csr_mcause_en    <=  0;
+               o_csr_source       <=  0;
+               o_csr_d_sel        <=  0;
+               o_csr_imm_en       <=  0;
+               o_immdec_ctrl      <=  0;
+               o_immdec_en        <=  0;
+               o_op_b_source      <=  0;
+               o_rd_csr_en        <=  0;
+               o_rd_alu_en        <=  0;
+               o_rd_mem_en        <=  0;
+            end else begin
+               if (i_wb_en) begin
+                  o_sh_right         <= co_sh_right;
+                  o_bne_or_bge       <= co_bne_or_bge;
+                  o_cond_branch      <= co_cond_branch;
+                  o_e_op             <= co_e_op;
+                  o_ebreak           <= co_ebreak;
+                  o_two_stage_op     <= co_two_stage_op;
+                  o_dbus_en          <= co_dbus_en;
+                  o_mtval_pc         <= co_mtval_pc;
+                  o_branch_op        <= co_branch_op;
+                  o_shift_op         <= co_shift_op;
+                  o_rd_op            <= co_rd_op;
+                  o_mdu_op           <= co_mdu_op;
+                  o_ext_funct3       <= co_ext_funct3;
+                  o_bufreg_rs1_en    <= co_bufreg_rs1_en;
+                  o_bufreg_imm_en    <= co_bufreg_imm_en;
+                  o_bufreg_clr_lsb   <= co_bufreg_clr_lsb;
+                  o_bufreg_sh_signed <= co_bufreg_sh_signed;
+                  o_ctrl_jal_or_jalr <= co_ctrl_jal_or_jalr;
+                  o_ctrl_utype       <= co_ctrl_utype;
+                  o_ctrl_pc_rel      <= co_ctrl_pc_rel;
+                  o_ctrl_mret        <= co_ctrl_mret;
+                  o_alu_sub          <= co_alu_sub;
+                  o_alu_bool_op      <= co_alu_bool_op;
+                  o_alu_cmp_eq       <= co_alu_cmp_eq;
+                  o_alu_cmp_sig      <= co_alu_cmp_sig;
+                  o_alu_rd_sel       <= co_alu_rd_sel;
+                  o_mem_signed       <= co_mem_signed;
+                  o_mem_word         <= co_mem_word;
+                  o_mem_half         <= co_mem_half;
+                  o_mem_cmd          <= co_mem_cmd;
+                  o_csr_en           <= co_csr_en;
+                  o_csr_addr         <= co_csr_addr;
+                  o_csr_mstatus_en   <= co_csr_mstatus_en;
+                  o_csr_mie_en       <= co_csr_mie_en;
+                  o_csr_mcause_en    <= co_csr_mcause_en;
+                  o_csr_source       <= co_csr_source;
+                  o_csr_d_sel        <= co_csr_d_sel;
+                  o_csr_imm_en       <= co_csr_imm_en;
+                  o_immdec_ctrl      <= co_immdec_ctrl;
+                  o_immdec_en        <= co_immdec_en;
+                  o_op_b_source      <= co_op_b_source;
+                  o_rd_csr_en        <= co_rd_csr_en;
+                  o_rd_alu_en        <= co_rd_alu_en;
+                  o_rd_mem_en        <= co_rd_mem_en;
+               end
             end
          end
 

@@ -146,7 +146,7 @@ module serv_state
 
    assign o_cnt_done = (o_cnt[4:2] == 3'b111) & cnt_r[3];
 
-   always @(posedge i_clk) begin
+   always @(posedge i_clk, posedge i_rst) begin
       //ibus_cyc changes on three conditions.
       //1. i_rst is asserted. Together with the async gating above, o_ibus_cyc
       //   will be asserted as soon as the reset is released. This is how the
@@ -156,19 +156,19 @@ module serv_state
       //   o_ibus_cyc gets asserted to fetch a new instruction
       //3. When i_ibus_ack, a new instruction is fetched and o_ibus_cyc gets
       //   deasserted to finish the transaction
-      if (i_ibus_ack | o_cnt_done | i_rst)
-	ibus_cyc <= o_ctrl_pc_en | i_rst;
-
-      if (o_cnt_done) begin
-	 init_done <= o_init & !init_done;
-	 o_ctrl_jump <= o_init & take_branch;
-      end
-
       if (i_rst) begin
-	 if (RESET_STRATEGY != "NONE") begin
-	    init_done <= 1'b0;
-	    o_ctrl_jump <= 1'b0;
-	 end
+            init_done <= 1'b0;
+            o_ctrl_jump <= 1'b0;
+            ibus_cyc <= 1;
+      end else begin
+         if (i_ibus_ack | o_cnt_done)
+            ibus_cyc <= o_ctrl_pc_en ;
+
+         if (o_cnt_done) begin
+            init_done <= o_init & !init_done;
+            o_ctrl_jump <= o_init & take_branch;
+         end
+
       end
    end
 
@@ -197,27 +197,33 @@ module serv_state
        */
       if (W == 1) begin : gen_cnt_w_eq_1
 	 reg [3:0] cnt_lsb;
-	 always @(posedge i_clk) begin
-            o_cnt <= o_cnt + {2'd0,cnt_r[3]};
-            cnt_lsb <= {cnt_lsb[2:0],(cnt_lsb[3] & !o_cnt_done) | i_rf_ready};
-	    if (i_rst & (RESET_STRATEGY != "NONE")) begin
-	       o_cnt   <= 3'd0;
-	       cnt_lsb <= 4'b0000;
-	    end
+
+	 always @(posedge i_clk, posedge i_rst) begin
+      if (i_rst) begin
+	         o_cnt   <= 3'd0;
+	         cnt_lsb <= 4'b0000;
+      end else begin
+         o_cnt <= o_cnt + {2'd0,cnt_r[3]};
+         cnt_lsb <= {cnt_lsb[2:0],(cnt_lsb[3] & !o_cnt_done) | i_rf_ready};
+      end
 	 end
+
 	 assign cnt_r = cnt_lsb;
 	 assign o_cnt_en = |cnt_lsb;
       end else if (W == 4) begin : gen_cnt_w_eq_4
 	 reg cnt_en;
-	 always @(posedge i_clk) begin
-            if (i_rf_ready) cnt_en <= 1; else
-            if (o_cnt_done) cnt_en <= 0;
+
+	 always @(posedge i_clk, posedge i_rst) begin
+      if (i_rst) begin
+	      o_cnt   <= 3'd0;
+	      cnt_en <= 1'b0;
+      end else begin
+         if (i_rf_ready) cnt_en <= 1; else
+         if (o_cnt_done) cnt_en <= 0;
             o_cnt <= o_cnt + { 2'd0, cnt_en };
-	    if (i_rst & (RESET_STRATEGY != "NONE")) begin
-	       o_cnt   <= 3'd0;
-	       cnt_en <= 1'b0;
-	    end
+      end
 	 end
+
 	 assign cnt_r = 4'b1111;
 	 assign o_cnt_en = cnt_en;
       end
@@ -229,10 +235,15 @@ module serv_state
       if (WITH_CSR) begin : gen_csr
 	 reg 	misalign_trap_sync_r;
 
-	 always @(posedge i_clk) begin
-	    if (i_ibus_ack | o_cnt_done | i_rst)
-	      misalign_trap_sync_r <= !(i_ibus_ack | i_rst) & ((trap_pending & o_init) | misalign_trap_sync_r);
+	 always @(posedge i_clk, posedge i_rst) begin
+      if (i_rst) begin
+         misalign_trap_sync_r <= 0;
+      end else begin
+         if (i_ibus_ack | o_cnt_done )
+	         misalign_trap_sync_r <= !(i_ibus_ack) & ((trap_pending & o_init) | misalign_trap_sync_r);
+      end
 	 end
+
 	 assign misalign_trap_sync = misalign_trap_sync_r;
       end else begin : gen_no_csr
 	 assign misalign_trap_sync = 1'b0;

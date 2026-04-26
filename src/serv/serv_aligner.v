@@ -52,8 +52,10 @@ module serv_aligner
     /* 16-bit register used to hold the upper half word of the current instruction in-case
        concatenation will be required with the upper half word of upcoming instruction
     */
-    always @(posedge clk) begin
-        if(i_wb_ibus_ack)begin
+    always @(posedge clk, posedge rst) begin
+        if(rst) begin
+            lower_hw  <= 0;
+        end else if(i_wb_ibus_ack)begin
             lower_hw <= i_wb_ibus_rdt[31:16];
         end
     end
@@ -65,7 +67,7 @@ module serv_aligner
     */
     assign ack_en   = !(i_ibus_adr[1] & !ctrl_misal);
 
-    always @(posedge clk ) begin
+    always @(posedge clk, posedge rst) begin
         if(rst)
             ctrl_misal <= 0;
         else if(i_wb_ibus_ack & i_ibus_adr[1])

@@ -87,6 +87,9 @@ module tb ();
 `ifdef GL_TEST
   wire VPWR = 1'b1;
   wire VGND = 1'b0;
+`elsif GL_VDD
+  wire VDD = 1'b1;
+  wire VSS = 1'b0;
 `endif
 
   	wire w_sio0_si_mosi_i;
@@ -174,6 +177,9 @@ module tb ();
 `ifdef GL_TEST
       .VPWR(VPWR),
       .VGND(VGND),
+`elsif GL_VDD
+	  .VDD(VDD),
+      .VSS(VSS),
 `endif
 
       .ui_in  (ui_in),    // Dedicated inputs
