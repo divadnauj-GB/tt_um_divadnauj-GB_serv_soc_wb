@@ -63,6 +63,7 @@
 //
 // $Log: not supported by cvs2svn $
 //
+`default_nettype none
 
 module uart_sync_flops
 (

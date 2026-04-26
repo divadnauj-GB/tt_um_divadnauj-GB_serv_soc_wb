@@ -22,6 +22,7 @@
  - Bursts
  - Pipelining
  */
+`default_nettype none
 
 module wb_cdc
   #(parameter AW = 32)

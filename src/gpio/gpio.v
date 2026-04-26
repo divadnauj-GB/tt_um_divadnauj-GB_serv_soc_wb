@@ -11,6 +11,7 @@
  * adr 0: gpio data 7:0
  * adr 1: gpio dir 7:0
  */
+`default_nettype none
 
 module gpio
        (

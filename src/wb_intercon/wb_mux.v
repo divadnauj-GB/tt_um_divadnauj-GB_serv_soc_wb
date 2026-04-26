@@ -39,6 +39,8 @@
  Registered master/slave connections
  Rewrite with System Verilog 2D arrays when tools support them
 */
+`default_nettype none
+
 module wb_mux
   #(parameter dw = 32,        // Data width
     parameter aw = 32,        // Address width

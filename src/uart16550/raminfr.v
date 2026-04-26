@@ -80,6 +80,8 @@
 //
 
 //Following is the Verilog code for a dual-port RAM with asynchronous read. 
+`default_nettype none
+
 module raminfr   
         (clk, we, a, dpra, di, dpo); 
 

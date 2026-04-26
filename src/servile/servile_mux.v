@@ -4,6 +4,7 @@
  * SPDX-FileCopyrightText: 2024 Olof Kindgren <olof.kindgren@gmail.com>
  * SPDX-License-Identifier: Apache-2.0
  */
+`default_nettype none
 
 module servile_mux
   #(parameter [0:0]  sim = 1'b0, //Enable simulation features

@@ -21,6 +21,7 @@
  Wishbone arbiter, burst-compatible
  Simple round-robin arbiter for multiple Wishbone masters
  */
+`default_nettype none
 
 module wb_arbiter
  #(parameter dw = 32,

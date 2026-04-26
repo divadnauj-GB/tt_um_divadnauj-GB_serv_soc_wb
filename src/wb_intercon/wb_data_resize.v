@@ -16,6 +16,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+ `default_nettype none
+
 module wb_data_resize
   #(parameter aw  = 32, //Address width
     parameter mdw = 32, //Master Data Width

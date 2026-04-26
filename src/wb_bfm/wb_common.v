@@ -1,4 +1,5 @@
 `include "wb_common_params.v"
+
 function get_cycle_type;
    input [2:0] cti;
    begin

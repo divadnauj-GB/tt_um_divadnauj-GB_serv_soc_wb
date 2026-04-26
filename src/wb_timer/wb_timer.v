@@ -1,3 +1,5 @@
+`default_nettype none
+
 module wb_timer
        (
 	input wire 			wb_clk,

@@ -133,6 +133,7 @@
 // Author: Jacob Gorban   (jacob.gorban@flextronicssemi.com)
 // Company: Flextronics Semiconductor
 //
+`default_nettype none
 
 `include "uart_defines.v"
  

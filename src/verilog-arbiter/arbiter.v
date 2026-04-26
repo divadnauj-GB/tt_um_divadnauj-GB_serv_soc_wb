@@ -24,6 +24,8 @@
  *
  * Author:  Berin Martini // berin.martini@gmail.com
  */
+ `default_nettype none
+
 `ifndef _arbiter_ `define _arbiter_
 
 

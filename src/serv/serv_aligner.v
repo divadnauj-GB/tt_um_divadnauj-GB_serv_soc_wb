@@ -4,6 +4,8 @@
  * SPDX-FileCopyrightText: 2022 Olof Kindgren <olof@award-winning.me>
  * SPDX-License-Identifier: ISC
  */
+ `default_nettype none
+
 module serv_aligner
    (
     input wire clk,

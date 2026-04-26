@@ -5,6 +5,7 @@
  * SPDX-FileCopyrightText: 2024 Olof Kindgren <olof.kindgren@gmail.com>
  * SPDX-License-Identifier: Apache-2.0
  */
+`default_nettype none
 
 module servile_arbiter
   (

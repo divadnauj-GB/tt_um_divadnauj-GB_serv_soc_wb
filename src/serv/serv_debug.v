@@ -4,6 +4,8 @@
  * SPDX-FileCopyrightText: 2024 Olof Kindgren <olof@award-winning.me>
  * SPDX-License-Identifier: ISC
  */
+ `default_nettype none
+
 module serv_debug
   #(parameter W = 1,
     parameter RESET_PC = 0,

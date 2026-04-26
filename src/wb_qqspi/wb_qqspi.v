@@ -1,3 +1,5 @@
+`default_nettype none
+
 module wb_qqspi#(
     parameter CHIP_SELECTS = 3
 )(

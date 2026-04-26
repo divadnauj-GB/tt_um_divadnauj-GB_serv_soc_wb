@@ -4,6 +4,8 @@
  * SPDX-FileCopyrightText: 2019 Olof Kindgren <olof@award-winning.me>
  * SPDX-License-Identifier: ISC
  */
+ `default_nettype none
+
 module serv_rf_ram
   #(parameter width=0,
     parameter	EMBEDDED = 0,

@@ -131,6 +131,7 @@
 // Initial revision
 //
 //
+`default_nettype none
 
 `include "uart_defines.v"
 

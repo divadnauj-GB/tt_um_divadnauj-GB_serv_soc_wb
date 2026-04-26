@@ -21,6 +21,8 @@
  *
  */
 
+ `default_nettype none
+
 module nanorv32_timer(
 	// clock and reset
 	input							reset,
