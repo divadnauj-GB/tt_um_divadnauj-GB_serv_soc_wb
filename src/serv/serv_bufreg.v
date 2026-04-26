@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: ISC
  */
 module serv_bufreg #(
-      parameter [0:0] MDU = 0,
+      parameter MDU = 0,
       parameter W = 1,
       parameter B = W-1
 )(

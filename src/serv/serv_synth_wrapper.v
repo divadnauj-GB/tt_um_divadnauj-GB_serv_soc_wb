@@ -49,14 +49,14 @@ module serv_synth_wrapper
 
    wire 	      rf_wreq;
    wire 	      rf_rreq;
-   wire [4+WITH_CSR:0] wreg0;
-   wire [4+WITH_CSR:0] wreg1;
+   wire [4+WITH_CSR-1*EMBEDDED:0] wreg0;
+   wire [4+WITH_CSR-1*EMBEDDED:0] wreg1;
    wire 	      wen0;
    wire 	      wen1;
    wire 	      wdata0;
    wire 	      wdata1;
-   wire [4+WITH_CSR:0] rreg0;
-   wire [4+WITH_CSR:0] rreg1;
+   wire [4+WITH_CSR-1*EMBEDDED:0] rreg0;
+   wire [4+WITH_CSR-1*EMBEDDED:0] rreg1;
    wire 	      rf_ready;
    wire 	      rdata0;
    wire 	      rdata1;

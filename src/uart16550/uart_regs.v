@@ -357,7 +357,7 @@ wire serial_out;
 uart_transmitter #(.SIM (SIM)) transmitter(clk, wb_rst_i, lcr, tf_push, wb_dat_i, enable, serial_out, tstate, tf_count, tx_reset, lsr_mask);
 
   // Synchronizing and sampling serial RX input
-  uart_sync_flops    i_uart_sync_flops
+  uart_sync_flops #(.width(1),.init_value(1'b1))   i_uart_sync_flops
   (
     .rst_i           (wb_rst_i),
     .clk_i           (clk),
@@ -366,8 +366,8 @@ uart_transmitter #(.SIM (SIM)) transmitter(clk, wb_rst_i, lcr, tf_push, wb_dat_i
     .async_dat_i     (srx_pad_i),
     .sync_dat_o      (srx_pad)
   );
-  defparam i_uart_sync_flops.width      = 1;
-  defparam i_uart_sync_flops.init_value = 1'b1;
+  //defparam i_uart_sync_flops.width      = 1;
+  //defparam i_uart_sync_flops.init_value = 1'b1;
 
 // handle loopback
 wire serial_in = loopback ? serial_out : srx_pad;

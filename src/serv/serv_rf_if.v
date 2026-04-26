@@ -9,18 +9,18 @@ module serv_rf_if
   #(parameter WITH_CSR = 1,
     parameter W = 1,
     parameter B = W-1,
-    parameter [0:0] EMBEDDED = 1'b0
+    parameter	EMBEDDED = 0
   )
   (//RF Interface
    input wire 		      i_cnt_en,
-   output wire [4+WITH_CSR:0] o_wreg0,
-   output wire [4+WITH_CSR:0] o_wreg1,
+   output wire [4+WITH_CSR-1*EMBEDDED:0] o_wreg0,
+   output wire [4+WITH_CSR-1*EMBEDDED:0] o_wreg1,
    output wire 		      o_wen0,
    output wire 		      o_wen1,
    output wire [B:0]  o_wdata0,
    output wire [B:0]  o_wdata1,
-   output wire [4+WITH_CSR:0] o_rreg0,
-   output wire [4+WITH_CSR:0] o_rreg1,
+   output wire [4+WITH_CSR-1*EMBEDDED:0] o_rreg0,
+   output wire [4+WITH_CSR-1*EMBEDDED:0] o_rreg1,
    input wire  [B:0] i_rdata0,
    input wire  [B:0] i_rdata1,
 
@@ -63,7 +63,7 @@ module serv_rf_if
    wire 	     rd_wen = i_rd_wen & (|i_rd_waddr);
 
    generate
-   if (|WITH_CSR) begin : gen_csr
+   if (WITH_CSR==1) begin : gen_csr
    wire [B:0] rd =
        {W{i_rd_alu_en}} & i_alu_rd |
        {W{i_rd_csr_en}} & i_csr_rd |
@@ -86,9 +86,16 @@ module serv_rf_if
     * mtval    100011
     */
     
+    if (EMBEDDED==1) begin: gen_rv32e_wreg
+      assign o_wreg0 = i_trap ? {5'b10011} : {i_rd_waddr} ;
+      assign o_wreg1 = i_trap ? {5'b10010} : {3'b100,i_csr_addr} ;
+    end else begin: gen_rv32i_wreg
+      assign o_wreg0 = i_trap ? {6'b100011} : {1'b0,i_rd_waddr};
+      assign o_wreg1 =  i_trap ? {6'b100010} : {4'b1000,i_csr_addr};
+    end
 
-  assign o_wreg0 = EMBEDDED ? (i_trap ? {6'b010011} : {1'b0,i_rd_waddr}) : (i_trap ? {6'b100011} : {1'b0,i_rd_waddr});
-  assign o_wreg1 = EMBEDDED ? (i_trap ? {6'b010010} : {4'b0100,i_csr_addr}) : (i_trap ? {6'b100010} : {4'b1000,i_csr_addr});
+  //assign o_wreg0 = EMBEDDED ? (i_trap ? {6'b010011} : {1'b0,i_rd_waddr}) : (i_trap ? {6'b100011} : {1'b0,i_rd_waddr});
+  //assign o_wreg1 = EMBEDDED ? (i_trap ? {6'b010010} : {4'b0100,i_csr_addr}) : (i_trap ? {6'b100010} : {4'b1000,i_csr_addr});
   
    assign       o_wen0 = i_cnt_en & (i_trap | rd_wen);
    assign       o_wen1 = i_cnt_en & (i_trap | i_csr_en);
@@ -100,7 +107,11 @@ module serv_rf_if
    //0 : RS1
    //1 : RS2 / CSR
 
-   assign o_rreg0 =  {1'b0, i_rs1_raddr};
+   if (EMBEDDED==1) begin: gen_rv32e_rreg0
+    assign o_rreg0 =  i_rs1_raddr ;
+   end else begin : gen_rv32i_rreg0
+    assign o_rreg0 =  {1'b0, i_rs1_raddr};
+   end
 
    /*
     The address of the second read port (o_rreg1) can get assigned from four
@@ -124,11 +135,23 @@ module serv_rf_if
    wire sel_rs2 = !(i_trap | i_mret | i_csr_en);
 
   
-   assign o_rreg1 = EMBEDDED ? ({1'b0,~sel_rs2,
+   if (EMBEDDED==1) begin: gen_rv32e_rreg1
+    assign o_rreg1 = ({~sel_rs2,
            i_rs2_raddr[3:2] & {2{sel_rs2}},
-           {1'b0,i_trap} | {i_mret,1'b0} | ({2{i_csr_en}} & i_csr_addr) | ({2{sel_rs2}} & i_rs2_raddr[1:0])}) : ({~sel_rs2,
+           {1'b0,i_trap} | {i_mret,1'b0} | ({2{i_csr_en}} & i_csr_addr) | ({2{sel_rs2}} & i_rs2_raddr[1:0])}) ;
+   end else begin: gen_rv32i_rreg1
+    assign o_rreg1 = ({~sel_rs2,
            i_rs2_raddr[4:2] & {3{sel_rs2}},
-           {1'b0,i_trap} | {i_mret,1'b0} | ({2{i_csr_en}} & i_csr_addr) | ({2{sel_rs2}} & i_rs2_raddr[1:0])});
+           {1'b0,i_trap} | {i_mret,1'b0} | ({2{i_csr_en}} & i_csr_addr) | ({2{sel_rs2}} & i_rs2_raddr[1:0])}) ;
+   end
+
+
+
+   //assign o_rreg1 = EMBEDDED ? ({1'b0,~sel_rs2,
+   //        i_rs2_raddr[3:2] & {2{sel_rs2}},
+   //        {1'b0,i_trap} | {i_mret,1'b0} | ({2{i_csr_en}} & i_csr_addr) | ({2{sel_rs2}} & i_rs2_raddr[1:0])}) : ({~sel_rs2,
+   //        i_rs2_raddr[4:2] & {3{sel_rs2}},
+   //        {1'b0,i_trap} | {i_mret,1'b0} | ({2{i_csr_en}} & i_csr_addr) | ({2{sel_rs2}} & i_rs2_raddr[1:0])});
 
    assign o_rs1 = i_rdata0;
    assign o_rs2 = i_rdata1;

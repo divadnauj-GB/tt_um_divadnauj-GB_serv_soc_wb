@@ -98,10 +98,16 @@ module tt_um_divadnauj_GB_serv_rv32e (
 
 
 	serv_wb_soc_rv32e #(
-		.PROGADDR_RESET (32'h 0000_0000),
-		.PROGADDR_IRQ(32'h 0000_0010),
-		.BOOTROM_MEMFILE ("./src/riscv-nmon_0/nmon_nanorv32-wb-soc_24MHz_115200.txt"),
-		.BOOTROM_MEMDEPTH (1024)
+		.width(1),
+		.EMBEDDED(1),
+		.PRE_REGISTER(1),
+		.reset_pc(32'h00000000),
+		.reset_strategy("MINI"),
+		.sim(0),
+		.debug(0),
+		.with_c(0),
+		.with_csr(1),
+		.with_mdu(0)
 	)
 	soc(
 		.clock (wb_clk),

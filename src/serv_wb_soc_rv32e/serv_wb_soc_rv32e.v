@@ -1,11 +1,16 @@
 `default_nettype none
 
 module serv_wb_soc_rv32e #(
-	parameter SIM = 0,
-	parameter PROGADDR_RESET = 32'h 0000_0000,
-	parameter PROGADDR_IRQ = 32'h 0000_0010,
-	parameter BOOTROM_MEMFILE = "",
-	parameter BOOTROM_MEMDEPTH = 1024
+	parameter width = 1,
+    parameter EMBEDDED = 0,
+    parameter PRE_REGISTER = 1,
+    parameter reset_pc = 32'h00000000,
+    parameter reset_strategy = "MINI",
+    parameter sim = 0,
+    parameter debug = 0,
+    parameter with_c = 0,
+    parameter with_csr = 1,
+    parameter with_mdu = 0
 	)
 	(
 	input  wire clock,
@@ -75,7 +80,7 @@ module serv_wb_soc_rv32e #(
    );
 
 	uart_top #(
-		.SIM (SIM)
+		.SIM (sim)
 	)
 	uart16550(
 		.wb_clk_i(wb_clk),
@@ -141,7 +146,19 @@ module serv_wb_soc_rv32e #(
 		.wb_rst		(wb_rst)
 	);
 
-	servile_rf servile_core (
+	servile_rf #(
+	.width(width),
+	.EMBEDDED(EMBEDDED),
+	.PRE_REGISTER(PRE_REGISTER),
+	.reset_pc(reset_pc),
+	.reset_strategy(reset_strategy),
+	.sim(sim),
+	.debug(debug),
+	.with_c(with_c),
+	.with_csr(with_csr),
+	.with_mdu(with_mdu)
+	) 
+	servile_core (
 		    .i_clk(wb_clk),
    			.i_rst(wb_rst),
    			.i_timer_irq(timer_irq),

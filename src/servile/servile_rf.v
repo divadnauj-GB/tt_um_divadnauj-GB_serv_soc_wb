@@ -8,17 +8,18 @@
 `default_nettype none
 module servile_rf
   #(
-    parameter	    width = 1,
-    parameter	[0:0]  EMBEDDED = 1'b1,
-    parameter	    reset_pc = 32'h00000000,
-    parameter	    reset_strategy = "MINI",
-    parameter	    rf_width = 2*width,
-    parameter [0:0] sim = 1'b0,
-    parameter [0:0] debug = 1'b0,
-    parameter [0:0] with_c = 1'b0,
-    parameter [0:0] with_csr = 1'b1,
-    parameter [0:0] with_mdu = 1'b0,
+    parameter	width = 1,
+    parameter	EMBEDDED = 0,
+    parameter PRE_REGISTER = 1,
+    parameter	reset_pc = 32'h00000000,
+    parameter	reset_strategy = "MINI",
+    parameter sim = 0,
+    parameter debug = 0,
+    parameter with_c = 0,
+    parameter with_csr = 1,
+    parameter with_mdu = 0,
     //Internally calculated. Do not touch
+    parameter	    rf_width = 2*width,
     parameter	    B = width-1,
     parameter	    regs = 32-16*EMBEDDED+with_csr*4,
     parameter	    rf_l2d = $clog2(regs*32/rf_width))
@@ -50,28 +51,6 @@ module servile_rf
    wire 	wb_dbus_stb;
    wire [31:0] 	wb_dbus_rdt;
    wire 	wb_dbus_ack;
-
-   wire [31:0] 	wb_dmem_adr;
-   wire [31:0] 	wb_dmem_dat;
-   wire [3:0] 	wb_dmem_sel;
-   wire 	wb_dmem_we;
-   wire 	wb_dmem_stb;
-   wire [31:0] 	wb_dmem_rdt;
-   wire 	wb_dmem_ack;
-
-   wire 		   rf_wreq;
-   wire 		   rf_rreq;
-   wire [$clog2(regs)-1:0] wreg0;
-   wire [$clog2(regs)-1:0] wreg1;
-   wire 		   wen0;
-   wire 		   wen1;
-   wire [B:0]		   wdata0;
-   wire [B:0]		   wdata1;
-   wire [$clog2(regs)-1:0] rreg0;
-   wire [$clog2(regs)-1:0] rreg1;
-   wire 		   rf_ready;
-   wire [B:0]		   rdata0;
-   wire [B:0]		   rdata1;
 
    wire [31:0]		   mdu_rs1;
    wire [31:0]		   mdu_rs2;
@@ -113,7 +92,7 @@ module servile_rf
 	    .i_mdu_valid (mdu_valid),
 	    .o_mdu_ready (mdu_ready),
 	    .o_mdu_rd    (mdu_rd));
-      end else begin
+      end else begin: no_gen_mdu
 	 assign mdu_ready = 1'b0;
 	 assign mdu_rd = 32'd0;
       end
@@ -121,9 +100,9 @@ module servile_rf
 
    serv_rf_top
      #(
-       .WITH_CSR       (with_csr?1:0),
+       .WITH_CSR       (with_csr),
        .W              (width),
-       .PRE_REGISTER   (1'b1),
+       .PRE_REGISTER   (PRE_REGISTER),
        .EMBEDDED       (EMBEDDED),
        .RESET_STRATEGY (reset_strategy),
        .RESET_PC       (reset_pc),

@@ -6,8 +6,8 @@
  */
 `default_nettype none
 module serv_decode
-  #(parameter [0:0] PRE_REGISTER = 1,
-    parameter [0:0] MDU = 0)
+  #(parameter PRE_REGISTER = 1,
+    parameter MDU = 0)
   (
    input wire        clk,
    //Input
@@ -237,7 +237,7 @@ module serv_decode
    wire co_op_b_source = opcode[3];
 
    generate
-      if (PRE_REGISTER) begin : gen_pre_register
+      if (PRE_REGISTER==1) begin : gen_pre_register
 
          always @(posedge clk) begin
             if (i_wb_en) begin

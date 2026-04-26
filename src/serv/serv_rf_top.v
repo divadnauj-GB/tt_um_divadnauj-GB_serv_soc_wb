@@ -11,16 +11,16 @@ module serv_rf_top
     /*  COMPRESSED=1: Enable the compressed decoder and allowed misaligned jump of pc
         COMPRESSED=0: Disable the compressed decoder and does not allow the misaligned jump of pc
     */
-    parameter [0:0] COMPRESSED = 0,
+    parameter COMPRESSED = 0,
     /*
       ALIGN = 1: Fetch the aligned instruction by making two bus transactions if the misaligned address
       is given to the instruction bus.
     */
-    parameter [0:0] ALIGN = COMPRESSED,
+    parameter ALIGN = COMPRESSED,
     /* Multiplication and Division Unit
        This parameter enables the interface for connecting SERV and MDU
     */
-    parameter [0:0] MDU = 0,
+    parameter MDU = 0,
     /* Register signals before or after the decoder
        0 : Register after the decoder. Faster but uses more resources
        1 : (default) Register before the decoder. Slower but uses less resources
@@ -33,10 +33,10 @@ module serv_rf_top
                  restart execution from the instruction at RESET_PC
      */
 
-    parameter [0:0] EMBEDDED = 1'b0,
+    parameter	EMBEDDED = 0,
 
     parameter RESET_STRATEGY = "MINI",
-    parameter [0:0] DEBUG = 1'b0,
+    parameter DEBUG = 1'b0,
     parameter WITH_CSR = 1,
     parameter W        = 1,
     parameter RF_WIDTH = W * 2,
@@ -93,14 +93,14 @@ module serv_rf_top
 
    wire 	      rf_wreq;
    wire 	      rf_rreq;
-   wire [4+WITH_CSR:0] wreg0;
-   wire [4+WITH_CSR:0] wreg1;
+   wire [4+WITH_CSR-1*EMBEDDED:0] wreg0;
+   wire [4+WITH_CSR-1*EMBEDDED:0] wreg1;
    wire 	      wen0;
    wire 	      wen1;
    wire [W-1:0]	      wdata0;
    wire [W-1:0]	      wdata1;
-   wire [4+WITH_CSR:0] rreg0;
-   wire [4+WITH_CSR:0] rreg1;
+   wire [4+WITH_CSR-1*EMBEDDED:0] rreg0;
+   wire [4+WITH_CSR-1*EMBEDDED:0] rreg1;
    wire 	      rf_ready;
    wire [W-1:0]	      rdata0;
    wire [W-1:0]	      rdata1;

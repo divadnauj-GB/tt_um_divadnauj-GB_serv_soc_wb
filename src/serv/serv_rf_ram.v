@@ -6,7 +6,7 @@
  */
 module serv_rf_ram
   #(parameter width=0,
-    parameter [0:0] EMBEDDED = 1'b0,
+    parameter	EMBEDDED = 0,
     parameter csr_regs=4,
     parameter depth=32*(32-16*EMBEDDED+csr_regs)/width)
    (input wire i_clk,

@@ -6,9 +6,9 @@
  */
 module serv_state
   #(parameter RESET_STRATEGY = "MINI",
-    parameter [0:0] WITH_CSR = 1,
-    parameter [0:0] ALIGN =0,
-    parameter [0:0] MDU = 0,
+    parameter WITH_CSR = 1,
+    parameter ALIGN =0,
+    parameter MDU = 0,
     parameter       W = 1
   )
   (

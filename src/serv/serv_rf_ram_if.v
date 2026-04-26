@@ -18,7 +18,7 @@ module serv_rf_ram_if
     //Number of CSR registers. These are allocated after the normal
     // GPR registers in the RAM.
     parameter csr_regs=4,
-    parameter [0:0] EMBEDDED = 1'b0,
+    parameter	EMBEDDED = 0,
     //Internal parameters calculated from above values. Do not change
     parameter B=W-1,
     parameter raw=$clog2(32-16*EMBEDDED+csr_regs), //Register address width

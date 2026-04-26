@@ -70,7 +70,7 @@ module serv_ctrl
    assign {pc_plus_4_cy,pc_plus_4} = pc+plus_4+pc_plus_4_cy_r_w;
 
    generate
-      if (|WITH_CSR) begin : gen_csr
+      if (WITH_CSR==1) begin : gen_csr
 	 if (W == 1) begin : gen_new_pc_w_eq_1
 	    assign new_pc = i_trap ? (i_csr_pc & !(i_cnt0 || i_cnt1)) : i_jump ? pc_plus_offset_aligned : pc_plus_4;
          end else if (W == 4) begin : gen_new_pc_w_eq_4

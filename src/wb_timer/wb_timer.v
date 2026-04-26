@@ -22,7 +22,6 @@ module wb_timer
 reg [1:0] mtime_valid;
 reg [1:0] mtimecmp_valid;
 wire mtime_ready;
-wire mtimecmp_ready;
 wire [3:0] mtime_wstrb;
 wire wb_valid = wb_cyc_i & wb_stb_i & !wb_ack_o;
 wire [31:0] wb_dat_rd;
