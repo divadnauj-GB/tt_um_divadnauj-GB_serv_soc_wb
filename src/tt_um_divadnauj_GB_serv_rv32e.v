@@ -16,7 +16,6 @@ module tt_um_divadnauj_GB_serv_rv32e (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-	reg [1:0] rst_sync;
     wire wb_clk;
 	wire wb_rst;
 

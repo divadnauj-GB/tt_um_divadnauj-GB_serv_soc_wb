@@ -96,7 +96,14 @@ module serv_wb_soc_rv32e #(
 		.wb_ack_o(wb_uart0_ack),
 
 		.stx_pad_o(uart_tx),
-		.srx_pad_i(uart_rx)
+		.srx_pad_i(uart_rx),
+		.rts_pad_o(),
+		.cts_pad_i(),
+		.dtr_pad_o(),
+		.dsr_pad_i(),
+		.ri_pad_i(),
+		.dcd_pad_i(),
+		.int_o()
 	);
 
 	gpio gpio0 (
