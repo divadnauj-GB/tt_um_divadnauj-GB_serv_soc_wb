@@ -17,7 +17,7 @@ module tt_um_divadnauj_GB_serv_rv32e (
 );
 
     wire wb_clk;
-	wire wb_rst;
+	reg wb_rst;
 
 	wire w_sio0_si_mosi_i;
 	wire w_sio1_so_miso_i;
@@ -39,20 +39,21 @@ module tt_um_divadnauj_GB_serv_rv32e (
 
 	wire sclk;
 
+	reg  rst_sync;
+
     assign wb_clk = clk;
 
-	/*
+	
 	always@(posedge clk, negedge rst_n) begin
 		if (~rst_n) begin
-			rst_sync <= 2'b11;
+			rst_sync <= 0;
 		end else begin
-			rst_sync[0] <= ~rst_n;
-			rst_sync[1] <= rst_sync[0];
+			rst_sync <= rst_n;
 		end
 	end
-	*/
 	
-    assign wb_rst = ~rst_n;;
+	
+    assign wb_rst = ~rst_sync;
 
 
 	assign uo_out[7:0] = gpio0_o[7:0];
