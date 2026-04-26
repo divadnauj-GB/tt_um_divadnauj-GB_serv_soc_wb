@@ -14,7 +14,7 @@ ifneq ($(GATES),yes)
 SIM_BUILD				= sim_build/rtl
 VERILOG_INCLUDE_DIRS += $(SRC_DIR)/uart16550
 VERILOG_INCLUDE_DIRS += $(SRC_DIR)/wb_bfm
-VERILOG_INCLUDE_DIRS += $(SRC_DIR)/serv_wb_soc_rv32e/
+VERILOG_INCLUDE_DIRS += $(SRC_DIR)/serv_soc_wb/
 VERILOG_INCLUDE_DIRS += $(PWD)
 
 VERILOG_SOURCES += $(PWD)/timescale.v
@@ -67,9 +67,9 @@ VERILOG_SOURCES += $(SRC_DIR)/wb_intercon/wb_cdc.v
 VERILOG_SOURCES += $(SRC_DIR)/wb_intercon/wb_arbiter.v
 VERILOG_SOURCES += $(SRC_DIR)/wb_intercon/wb_data_resize.v
 VERILOG_SOURCES += $(SRC_DIR)/wb_intercon/wb_mux.v
-VERILOG_SOURCES += $(SRC_DIR)/serv_wb_soc_rv32e/serv_wb_soc_rv32e.v
-VERILOG_SOURCES += $(SRC_DIR)/serv_wb_soc_rv32e/wb_intercon.v
-VERILOG_SOURCES += $(SRC_DIR)/tt_um_divadnauj_GB_serv_rv32e.v
+VERILOG_SOURCES += $(SRC_DIR)/serv_soc_wb/serv_soc_wb.v
+VERILOG_SOURCES += $(SRC_DIR)/serv_soc_wb/wb_intercon.v
+VERILOG_SOURCES += $(SRC_DIR)/tt_um_divadnauj_GB_serv_soc_wb.v
 else
 
 # Gate level simulation:

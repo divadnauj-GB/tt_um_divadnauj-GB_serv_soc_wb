@@ -172,7 +172,7 @@ module tb ();
   //assign w_sio_oe[3:0] = {uio_oe[5:4],uio_oe[2:1]}; // w_ce[0] is always output
 
   // Replace tt_um_example with your module name:
-  tt_um_divadnauj_GB_serv_rv32e user_project (
+  tt_um_divadnauj_GB_serv_soc_wb user_project (
       // Include power ports for the Gate Level test:
 `ifdef GL_TEST
       .VPWR(VPWR),

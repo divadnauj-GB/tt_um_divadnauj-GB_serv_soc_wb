@@ -1,7 +1,7 @@
 # Tiny Tapeout project information
 project:
-  title:        "serv_wb_soc_rv32e"      # Project title
-  author:       "Juan David Guerrero"      # Your name
+  title:        "serv_soc_wb"      # Project title
+  author:       "Juan David Guerrero Balaguera"      # Your name
   discord:      "divadnauj-GB"      # Your discord username, for communication and automatically assigning you a Tapeout role (optional)
   description:  "Custom SOC using the SERV processor under RV32e"      # One line description of what your project does
   language:     "Verilog" # other examples include SystemVerilog, Amaranth, VHDL, etc
@@ -11,7 +11,7 @@ project:
   tiles: "3x2"          # Valid values: 1x1, 1x2, 2x2, 3x2, 4x2, 3x4 or 4x4
 
   # Your top module name must start with "tt_um_". Make it unique by including your github username:
-  top_module:  "tt_um_divadnauj_GB_serv_rv32e"
+  top_module:  "tt_um_divadnauj_GB_serv_soc_wb"
 
   # List your project's source files here.
   # Source files must be in ./src and you must list each source file separately, one per line.
@@ -54,9 +54,9 @@ project:
     - "wb_intercon/wb_arbiter.v"
     - "wb_intercon/wb_data_resize.v"
     - "wb_intercon/wb_mux.v"
-    - "serv_wb_soc_rv32e/serv_wb_soc_rv32e.v"
-    - "serv_wb_soc_rv32e/wb_intercon.v"
-    - "tt_um_divadnauj_GB_serv_rv32e.v"
+    - "serv_soc_wb/serv_soc_wb.v"
+    - "serv_soc_wb/wb_intercon.v"
+    - "tt_um_divadnauj_GB_serv_soc_wb.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 # This section is for the datasheet/website. Use descriptive names (e.g., RX, TX, MOSI, SCL, SEG_A, etc.).
