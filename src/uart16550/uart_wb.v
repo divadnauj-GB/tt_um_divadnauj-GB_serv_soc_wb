@@ -180,7 +180,7 @@ reg 			 wre ;// timing control signal for write or read enable
 
 // wb_ack_o FSM
 reg [1:0] 	 wbstate;
-always  @(posedge clk)
+always  @(posedge clk, posedge wb_rst_i)
 	if (wb_rst_i) begin
 		wb_ack_o <= 1'b0;
 		wbstate <= 0;
@@ -218,7 +218,7 @@ assign we_o =  wb_we_is & wb_stb_is & wb_cyc_is & wre ; //WE for registers
 assign re_o = ~wb_we_is & wb_stb_is & wb_cyc_is & wre ; //RE for registers	
 
 // Sample input signals
-always  @(posedge clk)
+always  @(posedge clk, posedge wb_rst_i)
 	if (wb_rst_i) begin
 		wb_adr_is <= 0;
 		wb_we_is <= 0;
@@ -233,7 +233,7 @@ always  @(posedge clk)
 		wb_dat_is <= wb_dat_i;
 	end
 
-always @(posedge clk)
+always @(posedge clk, posedge wb_rst_i)
 	if (wb_rst_i)
 		wb_dat_o <= 0;
 	else

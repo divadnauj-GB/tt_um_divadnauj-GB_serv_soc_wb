@@ -41,7 +41,7 @@ always @(*) begin
 end
 
 
-always @(posedge wb_clk)
+always @(posedge wb_clk, posedge wb_rst)
 	if (wb_rst) begin
 		wb_ack_o <= 0;
 		wb_dat_o <= 32'h0000_0000;
@@ -63,7 +63,7 @@ nanorv32_timer #(
 				.ENABLE_MTIMECMP	(1)
 			)
 			timer (
-				.resetn(~wb_rst),
+				.reset(wb_rst),
 				.clk(wb_clk),
 				.io_mtime_valid(mtime_valid),
 				.io_mtimecmp_valid(mtimecmp_valid),

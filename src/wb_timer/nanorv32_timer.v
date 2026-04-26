@@ -23,7 +23,7 @@
 
 module nanorv32_timer(
 	// clock and reset
-	input							resetn,
+	input							reset,
 	input							clk,
 
 	// I/O access
@@ -44,8 +44,8 @@ module nanorv32_timer(
 	reg			[31:0]				cnt[0:1];
 	reg								inc_cnt1;
 
-	always @(posedge clk) begin
-		if(~resetn) begin
+	always @(posedge clk, posedge reset) begin
+		if(reset) begin
 			cnt[1] <= 0;
 			cnt[0] <= 0;
 			inc_cnt1 <= 1'b0;
@@ -73,8 +73,8 @@ module nanorv32_timer(
 	assign		cmp_sub[1]			= $signed({1'b0,cnt[1]}) - $signed({1'b0,cmp_val[1]});	// subtraction forces synthesiser to use carry chain
 	assign		cmp_sub[0]			= $signed({1'b0,cnt[0]}) - $signed({1'b0,cmp_val[0]});
 
-	always @(posedge clk) begin
-		if(~resetn) begin
+	always @(posedge clk, posedge reset) begin
+		if(reset) begin
 			cmp_less <= 2'b00;
 			cmp_equal <= 1'b0;
 		end
@@ -88,8 +88,8 @@ module nanorv32_timer(
 
 	// I/O interface
 	integer i;
-	always @(posedge clk) begin
-		if(~resetn) begin
+	always @(posedge clk, posedge reset) begin
+		if(reset) begin
 			for(i = 0; i < 2; i = i + 1)
 				cmp_val[i] <= 0;
 		end

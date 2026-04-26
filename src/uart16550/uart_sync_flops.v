@@ -95,7 +95,7 @@ reg     [width-1:0]             flop_0;
 
 
 // first stage
-always @ (posedge clk_i)
+always @ (posedge clk_i or posedge rst_i)
 begin
     if (rst_i)
         flop_0 <= {width{init_value}};
@@ -104,7 +104,7 @@ begin
 end
 
 // second stage
-always @ (posedge clk_i)
+always @ (posedge clk_i or posedge rst_i)
 begin
     if (rst_i)
         sync_dat_o <= {width{init_value}};

@@ -199,7 +199,7 @@ raminfr #(fifo_pointer_w,8,fifo_depth) rfifo
 			.dpo(data8_out)
 		); 
 
-always @(posedge clk) // synchronous FIFO
+always @(posedge clk or posedge wb_rst_i) // synchronous FIFO
 begin
 	if (wb_rst_i)
 	begin
@@ -270,7 +270,7 @@ begin
 	end
 end   // always
 
-always @(posedge clk) // synchronous FIFO
+always @(posedge clk or posedge wb_rst_i) // synchronous FIFO
 begin
   if (wb_rst_i)
     overrun   <= 1'b0;

@@ -81,7 +81,7 @@ module serv_wb_soc_rv32e #(
 		.wb_clk_i(wb_clk),
 		.wb_rst_i(wb_rst),
 
-		.wb_adr_i(wb_uart0_adr),
+		.wb_adr_i(wb_uart0_adr[2:0]),
 		.wb_dat_i(wb_uart0_dat),
 		.wb_sel_i(wb_uart0_sel),
 		.wb_we_i(wb_uart0_we),
@@ -102,13 +102,13 @@ module serv_wb_soc_rv32e #(
 
 		// Wishbone slave interface
 		.wb_adr_i	(wb_gpio0_adr[2]),
-		.wb_dat_i	(wb_gpio0_dat),
+		.wb_dat_i	(wb_gpio0_dat[7:0]),
 		.wb_we_i	(wb_gpio0_we),
 		.wb_cyc_i	(wb_gpio0_cyc),
 		.wb_stb_i	(wb_gpio0_stb),
 		.wb_cti_i	(wb_gpio0_cti),
 		.wb_bte_i	(wb_gpio0_bte),
-		.wb_dat_o	(wb_gpio0_rdt),
+		.wb_dat_o	(wb_gpio0_rdt[7:0]),
 		.wb_ack_o	(wb_gpio0_ack),
 		.wb_err_o	(wb_gpio0_err),
 		.wb_rty_o	(wb_gpio0_rty),
@@ -116,6 +116,7 @@ module serv_wb_soc_rv32e #(
 		.wb_clk		(wb_clk),
 		.wb_rst		(wb_rst)
 	);
+	assign wb_gpio0_rdt[31:8] = 24'h000000;
 
 	wire timer_irq;
 

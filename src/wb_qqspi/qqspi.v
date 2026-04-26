@@ -34,7 +34,7 @@ module qqspi #(
     output reg ready,
     input wire valid,
     input wire clk,
-    input wire resetn,
+    input wire reset,
     input wire PSRAM_SPIFLASH,
     input wire QUAD_MODE,
 
@@ -106,8 +106,8 @@ module qqspi #(
       .wr_buffer  (wr_buffer)
   );
 
-  always @(posedge clk) begin
-    if (!resetn) begin
+  always @(posedge clk, posedge reset) begin
+    if (reset) begin
       ce <= ~0;
       sclk <= 1'b1;
       sio_oe <= 4'b0000;

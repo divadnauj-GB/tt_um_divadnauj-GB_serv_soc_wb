@@ -42,16 +42,18 @@ module tt_um_divadnauj_GB_serv_rv32e (
 
     assign wb_clk = clk;
 
+	/*
 	always@(posedge clk, negedge rst_n) begin
 		if (~rst_n) begin
-			rst_sync <= 1'b1;
+			rst_sync <= 2'b11;
 		end else begin
 			rst_sync[0] <= ~rst_n;
 			rst_sync[1] <= rst_sync[0];
 		end
 	end
-
-    assign wb_rst = rst_sync[1];
+	*/
+	
+    assign wb_rst = ~rst_n;;
 
 
 	assign uo_out[7:0] = gpio0_o[7:0];
@@ -73,6 +75,8 @@ module tt_um_divadnauj_GB_serv_rv32e (
 	assign uio_oe[3] = 1'b1; // sclk is always output
 	//assign uio_oe[4] = w_sio_oe[1];
 	//assign uio_oe[5] = w_sio_oe[3];
+	assign uio_oe[4] = 1'b1; // uart0_tx is always output 
+	assign uio_oe[5] = 1'b0; // uart0_rx is always input
 	assign uio_oe[6] = 1'b1; // w_ce[1] is always output
 	assign uio_oe[7] = 1'b1; // w_ce[2] is always output
 
@@ -83,8 +87,6 @@ module tt_um_divadnauj_GB_serv_rv32e (
 	//assign w_sio3_i			= uio_in[5];
 
     
-    assign uio_oe[4] = 1'b1; // uart0_tx is always output 
-	assign uio_oe[5] = 1'b0; // uart0_rx is always input
 
 
 	assign uio_out[4] = uart0_tx;

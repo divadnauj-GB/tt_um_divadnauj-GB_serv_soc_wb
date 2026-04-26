@@ -94,7 +94,7 @@ module wb_qqspi#(
       .ce(ce),
 
       .clk   (wb_clk_i),
-      .resetn(~wb_rst_i)
+      .reset(wb_rst_i)
   );
 
 
