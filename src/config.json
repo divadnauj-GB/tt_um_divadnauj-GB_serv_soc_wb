@@ -13,7 +13,7 @@
 
   "//": "PL_TARGET_DENSITY_PCT - You can increase this if Global Placement fails with error GPL-0302.",
   "//": "Users have reported that values up to 80 worked well for them.",
-  "PL_TARGET_DENSITY_PCT": 60,
+  "PL_TARGET_DENSITY_PCT": 70,
 
   "//": "CLOCK_PERIOD - Increase this in case you are getting setup time violations.",
   "//": "The value is in nanoseconds, so 20ns == 50MHz.",
@@ -23,22 +23,22 @@
   "SDC_FILE": "dir::serv_soc_wb.sdc",
 
   "RUN_POST_GPL_DESIGN_REPAIR": 1,
-  "PL_RESIZER_HOLD_SLACK_MARGIN": 0.15,
+  "PL_RESIZER_HOLD_SLACK_MARGIN": 0.2,
   "GRT_RESIZER_HOLD_SLACK_MARGIN": 0.05,
   "PL_RESIZER_SETUP_SLACK_MARGIN": 0.01,
   "GRT_RESIZER_SETUP_SLACK_MARGIN": 0.01,
 
-  "//": 0,
-  "//": 10,
-  "//": 0,
-  "//": 10,
+  "PL_RESIZER_ALLOW_SETUP_VIOS": 1,
+  "PL_RESIZER_SETUP_MAX_BUFFER_PCT": 20,
+  "GRT_RESIZER_ALLOW_SETUP_VIOS": 1,
+  "GRT_RESIZER_SETUP_MAX_BUFFER_PCT": 20,
 
-  "DESIGN_REPAIR_MAX_SLEW_PCT": 50,
-  "DESIGN_REPAIR_MAX_CAP_PCT": 50,
+  "DESIGN_REPAIR_MAX_SLEW_PCT": 60,
+  "DESIGN_REPAIR_MAX_CAP_PCT": 60,
   "DESIGN_REPAIR_REMOVE_BUFFERS": 1,
   "RUN_POST_GRT_DESIGN_REPAIR": 1,
-  "GRT_DESIGN_REPAIR_MAX_SLEW_PCT": 40,
-  "GRT_DESIGN_REPAIR_MAX_CAP_PCT": 40,
+  "GRT_DESIGN_REPAIR_MAX_SLEW_PCT": 50,
+  "GRT_DESIGN_REPAIR_MAX_CAP_PCT": 50,
 
   "//": "RUN_LINTER, LINTER_INCLUDE_PDK_MODELS - Disabling the linter is not recommended!",
   "RUN_LINTER": 1,
