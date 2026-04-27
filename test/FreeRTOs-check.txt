@@ -8,7 +8,3 @@ nmon commands:
    use <ESC> key to interrupt current command
 
 nmon> g 01000000
-FreeRTOS Demo Start
-Blink task 1
-Blink task 2
-Blink task 1
