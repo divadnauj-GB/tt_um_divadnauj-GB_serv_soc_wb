@@ -39,7 +39,7 @@ module serv_rf_top
     parameter DEBUG = 1'b0,
     parameter WITH_CSR = 1,
     parameter W        = 1,
-    parameter RF_WIDTH = W * 2,
+    parameter RF_WIDTH = W * 32,
 	parameter RF_L2D   = $clog2((32-16*EMBEDDED+(WITH_CSR*4))*32/RF_WIDTH))
   (
    input wire 	      clk,
