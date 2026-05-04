@@ -36,7 +36,6 @@ module wb_qqspi#(
    wire        spi_nor_mem_valid;
    wire        mem_sdram_valid,mem_sdram_valid1,mem_sdram_valid2;
    wire [3:0]  wb_wstrb_ctrl;
-   wire [31:0] wb_dat_o_w;
 
    assign mem_sdram_valid1 = (wb_adr_i[24]&&!wb_adr_i[23]&&!qqspi_mem_ready && wb_stb_i && wb_cyc_i);
    assign mem_sdram_valid2 = (wb_adr_i[24]&&wb_adr_i[23]&&!qqspi_mem_ready && wb_stb_i && wb_cyc_i);

@@ -240,8 +240,8 @@ module serv_decode
    generate
       if (PRE_REGISTER==1) begin : gen_pre_register
 
-         always @(posedge clk, posedge i_rst) begin
-            if (i_rst) begin
+         always @(posedge clk) begin
+            /*if (i_rst) begin
                funct3 <=  0;
                imm30  <=  0;
                imm25  <=  0;
@@ -250,7 +250,7 @@ module serv_decode
                op21   <=  0;
                op22   <=  0;
                op26   <=  0;
-            end else begin
+            end else begin*/
                if (i_wb_en) begin
                   funct3 <= i_wb_rdt[14:12];
                   imm30  <= i_wb_rdt[30];
@@ -261,7 +261,7 @@ module serv_decode
                   op22   <= i_wb_rdt[22];
                   op26   <= i_wb_rdt[26];
                end
-            end            
+            /*end*/            
          end
 
          always @(*) begin
@@ -324,8 +324,8 @@ module serv_decode
             op26    = i_wb_rdt[26];
          end
 
-         always @(posedge clk, posedge i_rst) begin
-            if (i_rst) begin
+         always @(posedge clk) begin
+            /*if (i_rst) begin
                o_sh_right         <=  0;
                o_bne_or_bge       <=  0;
                o_cond_branch      <=  0;
@@ -370,7 +370,7 @@ module serv_decode
                o_rd_csr_en        <=  0;
                o_rd_alu_en        <=  0;
                o_rd_mem_en        <=  0;
-            end else begin
+            end else begin*/
                if (i_wb_en) begin
                   o_sh_right         <= co_sh_right;
                   o_bne_or_bge       <= co_bne_or_bge;
@@ -417,7 +417,7 @@ module serv_decode
                   o_rd_alu_en        <= co_rd_alu_en;
                   o_rd_mem_en        <= co_rd_mem_en;
                end
-            end
+            /*end*/
          end
 
       end

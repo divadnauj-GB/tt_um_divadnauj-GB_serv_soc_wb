@@ -21,7 +21,7 @@ module tb_clkgen(
 	reg wb_clk_o = 0;
 	always
 	begin
-		#10 wb_clk_o = !wb_clk_o;
+		#20 wb_clk_o = !wb_clk_o;
 	end
 
 	// 100 MHz

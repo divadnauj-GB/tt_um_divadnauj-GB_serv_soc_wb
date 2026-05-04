@@ -37,7 +37,7 @@ module gpio
 
 
 // GPIO dir register
-always @(posedge wb_clk, posedge wb_rst)
+always @(posedge wb_clk)
 	if (wb_rst)
 		gpio_dir_o <= 0; // All set to in at reset
 	else if (wb_cyc_i & wb_stb_i & wb_we_i) begin
@@ -47,10 +47,8 @@ always @(posedge wb_clk, posedge wb_rst)
 
 
 // GPIO data out register
-always @(posedge wb_clk, posedge wb_rst)
-	if (wb_rst)
-		gpio_o <= 0;
-	else if (wb_cyc_i & wb_stb_i & wb_we_i) begin
+always @(posedge wb_clk)
+	if (wb_cyc_i & wb_stb_i & wb_we_i) begin
 		if (wb_adr_i == 0)
 			gpio_o[7:0] <= wb_dat_i;
 	end
@@ -68,7 +66,7 @@ always @(posedge wb_clk) begin
      end
 
 // Ack generation
-always @(posedge wb_clk, posedge wb_rst)
+always @(posedge wb_clk)
 	if (wb_rst)
 		wb_ack_o <= 0;
 	else if (wb_ack_o)

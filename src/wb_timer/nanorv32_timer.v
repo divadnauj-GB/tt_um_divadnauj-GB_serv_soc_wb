@@ -46,13 +46,13 @@ module nanorv32_timer(
 	reg			[31:0]				cnt[0:1];
 	reg								inc_cnt1;
 
-	always @(posedge clk, posedge reset) begin
-		if(reset) begin
+	always @(posedge clk) begin
+		/*if(reset) begin
 			cnt[1] <= 0;
 			cnt[0] <= 0;
 			inc_cnt1 <= 1'b0;
 		end
-		else begin
+		else begin */
 			// Lower part of the counter
 			cnt[0] <= cnt[0] + 1'b1;
 			inc_cnt1 <= cnt[0] == 32'hffff_fffe;
@@ -62,7 +62,7 @@ module nanorv32_timer(
 				cnt[1] <= cnt[1] + 1'b1;
 			end
 				
-		end
+		/*end*/
 	end
 
 	// Interrupt comparator
@@ -75,27 +75,27 @@ module nanorv32_timer(
 	assign		cmp_sub[1]			= $signed({1'b0,cnt[1]}) - $signed({1'b0,cmp_val[1]});	// subtraction forces synthesiser to use carry chain
 	assign		cmp_sub[0]			= $signed({1'b0,cnt[0]}) - $signed({1'b0,cmp_val[0]});
 
-	always @(posedge clk, posedge reset) begin
-		if(reset) begin
+	always @(posedge clk) begin
+		/*if(reset) begin
 			cmp_less <= 2'b00;
 			cmp_equal <= 1'b0;
 		end
-		else begin
+		else begin*/
 			cmp_less <= {cmp_sub[1][32], cmp_sub[0][32]};
 			cmp_equal <= cnt[1] == cmp_val[1];
-		end
+		/*end*/
 	end
 
 	assign		mtip				= (cmp_equal ? !cmp_less[0] : !cmp_less[1]) && ENABLE_MTIMECMP;
 
 	// I/O interface
 	integer i;
-	always @(posedge clk, posedge reset) begin
-		if(reset) begin
+	always @(posedge clk) begin
+		/*if(reset) begin
 			for(i = 0; i < 2; i = i + 1)
 				cmp_val[i] <= 0;
 		end
-		else begin
+		else begin*/
 			for(i = 0; i < 2; i = i + 1) begin
 				if(io_mtimecmp_valid[i] && ENABLE_MTIMECMP) begin
 					if(io_wstrb[3])
@@ -108,7 +108,7 @@ module nanorv32_timer(
 						cmp_val[i][7:0]		<= io_wdata[7:0];
 				end
 			end
-		end
+		/*end*/
 	end
 	
 	always @* begin

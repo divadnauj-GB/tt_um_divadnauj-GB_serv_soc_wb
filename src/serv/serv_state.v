@@ -146,7 +146,7 @@ module serv_state
 
    assign o_cnt_done = (o_cnt[4:2] == 3'b111) & cnt_r[3];
 
-   always @(posedge i_clk, posedge i_rst) begin
+   always @(posedge i_clk) begin
       //ibus_cyc changes on three conditions.
       //1. i_rst is asserted. Together with the async gating above, o_ibus_cyc
       //   will be asserted as soon as the reset is released. This is how the
@@ -198,7 +198,7 @@ module serv_state
       if (W == 1) begin : gen_cnt_w_eq_1
 	 reg [3:0] cnt_lsb;
 
-	 always @(posedge i_clk, posedge i_rst) begin
+	 always @(posedge i_clk) begin
       if (i_rst) begin
 	         o_cnt   <= 3'd0;
 	         cnt_lsb <= 4'b0000;
@@ -213,7 +213,7 @@ module serv_state
       end else if (W == 4) begin : gen_cnt_w_eq_4
 	 reg cnt_en;
 
-	 always @(posedge i_clk, posedge i_rst) begin
+	 always @(posedge i_clk) begin
       if (i_rst) begin
 	      o_cnt   <= 3'd0;
 	      cnt_en <= 1'b0;
@@ -235,7 +235,7 @@ module serv_state
       if (WITH_CSR) begin : gen_csr
 	 reg 	misalign_trap_sync_r;
 
-	 always @(posedge i_clk, posedge i_rst) begin
+	 always @(posedge i_clk) begin
       if (i_rst) begin
          misalign_trap_sync_r <= 0;
       end else begin

@@ -95,15 +95,15 @@ module serv_csr
 
    assign o_csr_in = csr_in;
 
-   always @(posedge i_clk, posedge i_rst) begin
+   always @(posedge i_clk) begin
 	  if (i_rst) begin
 			o_new_irq <= 1'b0;
 			mie_mtie <= 1'b0;
-			timer_irq_r <= 0;
-			mstatus_mie <= 0;
-			mstatus_mpie <= 0;
-			mcause3_0 <= 0;
-			mcause31 <= 0;
+			//timer_irq_r <= 0;
+			//mstatus_mie <= 0;
+			//mstatus_mpie <= 0;
+			//mcause3_0 <= 0;
+			//mcause31 <= 0;
 	  end else begin
 			if (i_trig_irq) begin
 				timer_irq_r <= timer_irq;

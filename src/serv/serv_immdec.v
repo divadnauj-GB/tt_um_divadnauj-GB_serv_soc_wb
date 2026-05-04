@@ -47,15 +47,15 @@ generate
 	 assign o_rs2_addr = imm24_20;
 	 assign o_rd_addr  = imm11_7;
 
-	 always @(posedge i_clk, posedge i_rst) begin
-		if (i_rst) begin
+	 always @(posedge i_clk) begin
+		/*if (i_rst) begin
 			imm31	<=	0;
 			imm19_12_20	<= 0;
 			imm7	<= 0;
 			imm30_25	<= 0;
 			imm24_20	<= 0;
 			imm11_7 <= 0;
-		end else begin
+		end else begin*/
 			if (i_wb_en) begin
 			/* CSR immediates are always zero-extended, hence clear the signbit */
 				imm31     <= i_wb_rdt[31];
@@ -73,7 +73,7 @@ generate
 
 			if (i_wb_en | (i_cnt_en & i_immdec_en[0]))
 				imm11_7     <= i_wb_en ? i_wb_rdt[11:7] : {imm30_25[0], imm11_7[4:1]};
-		end
+		/*end*/
 	 end
       end else begin : gen_separate_imm_regs
 	 reg [4:0]  rd_addr;
@@ -83,8 +83,8 @@ generate
 	 assign o_rd_addr  = rd_addr;
 	 assign o_rs1_addr = rs1_addr;
 	 assign o_rs2_addr = rs2_addr;
-	 always @(posedge i_clk, posedge i_rst) begin
-		if (i_rst) begin
+	 always @(posedge i_clk) begin
+		/*if (i_rst) begin
 			imm31       <=	0;
 			imm19_12_20 <=	0;
 			imm7        <=	0;
@@ -94,7 +94,7 @@ generate
 			rd_addr     <=	0;
 			rs1_addr    <=	0;
 			rs2_addr    <=	0;
-		end else begin
+		end else begin*/
 			if (i_wb_en) begin
 			/* CSR immediates are always zero-extended, hence clear the signbit */
 				imm31       <= i_wb_rdt[31];
@@ -114,7 +114,7 @@ generate
 				imm24_20    <= {imm30_25[0], imm24_20[4:1]};
 				imm11_7     <= {imm30_25[0], imm11_7[4:1]};
 			end
-		end
+		/*end*/
 	 end
       end
 
@@ -163,8 +163,8 @@ generate
    assign o_rd_addr  = rd_addr;
    assign o_rs1_addr = rs1_addr;
    assign o_rs2_addr = rs2_addr;
-   always @(posedge i_clk, posedge i_rst) begin
-	if (i_rst) begin
+   always @(posedge i_clk) begin
+	/*if (i_rst) begin
 		i31	     <= 0;   
 		i19      <= 0;   
 		i15      <= 0;   
@@ -195,7 +195,7 @@ generate
 		rd_addr  <= 0;  
 		rs1_addr <= 0;  
 		rs2_addr <= 0;  
-	end else begin
+	end else begin*/
 		if (i_wb_en) begin
 			//Common
 			i31 <= i_wb_rdt[31];
@@ -271,7 +271,7 @@ generate
 			i12   <= i16;
 			i16   <= i_ctrl[3] ? signbit : i20_2;
 		end
-	end
+	/*end*/
    end
 
    assign o_imm[3] = (i_cnt_done ? signbit : (i_ctrl[0] ? i10 : i23));

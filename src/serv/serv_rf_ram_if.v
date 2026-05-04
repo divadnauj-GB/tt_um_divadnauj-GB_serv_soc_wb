@@ -21,7 +21,7 @@ module serv_rf_ram_if
     parameter	EMBEDDED = 0,
     //Internal parameters calculated from above values. Do not change
     parameter B=W-1,
-    parameter raw=$clog2(32-16*EMBEDDED+csr_regs), //Register address width
+    parameter raw=$clog2(32-16*EMBEDDED-1*EMBEDDED+csr_regs), //Register address width
     parameter l2w=$clog2(width), //log2 of width
     parameter aw=5+raw-l2w) //Address width
   (
@@ -78,12 +78,12 @@ module serv_rf_ram_if
       assign wtrig1 =  wcnt[0];
    end else begin : gen_wtrig_ratio_neq_2
       reg wtrig0_r;
-      always @(posedge i_clk, posedge i_rst) begin
-         if (i_rst) begin
+      always @(posedge i_clk) begin
+         /*if (i_rst) begin
             wtrig0_r <= 0;
-         end else begin
+         end else begin*/
             wtrig0_r <= wtrig0;
-         end
+        /*end*/
       end
       
       assign wtrig1 = wtrig0_r;
@@ -106,11 +106,11 @@ module serv_rf_ram_if
 
    assign wcnt = rcnt-4;
 
-   always @(posedge i_clk, posedge i_rst) begin
+   always @(posedge i_clk) begin
       if (i_rst) begin
-         wen0_r    <= 0;
-         wen1_r    <= 0;
-         wdata0_r  <= 0;
+         //wen0_r    <= 0;
+         //wen1_r    <= 0;
+         //wdata0_r  <= 0;
          wdata1_r  <= 0;
       end else begin
          if (wcnt[0]) begin
@@ -157,36 +157,36 @@ module serv_rf_ram_if
    reg 	      rreq_r;
 
    generate if (ratio > 2) begin : gen_rdata1_w_neq_2
-      always @(posedge i_clk, posedge i_rst) begin
-         if (i_rst) begin
+      always @(posedge i_clk) begin
+         /*if (i_rst) begin
             rdata1 <= 0;
-         end else begin
+         end else begin*/
             rdata1 <= {{W{1'b0}},rdata1[width-W-1:W]};
             if (rtrig1)
                rdata1[width-W-1:0] <= i_rdata[width-1:W];
-         end
+         /*end*/
       end
    end else begin : gen_rdata1_w_eq_2
-      always @(posedge i_clk, posedge i_rst) begin
-         if (i_rst) begin
+      always @(posedge i_clk) begin
+         /*if (i_rst) begin
             rdata1 <= 0;
-         end else begin
+         end else begin*/
             if (rtrig1) rdata1 <= i_rdata[W*2-1:W];
-         end
+         /*end*/
          
       end
       
    end
    endgenerate
 
-   always @(posedge i_clk, posedge i_rst) begin
+   always @(posedge i_clk) begin
       if (i_rst) begin
             rgate <= 1'b0;
             rgnt <= 1'b0;
             rreq_r <= 1'b0;
             rcnt <= {CMSB+1{1'b0}};
-            rtrig1 <= 0;
-            rdata0 <= 0;
+            //rtrig1 <= 0;
+            //rdata0 <= 0;
       end else begin
          if (&rcnt | i_rreq)
             rgate <= i_rreq;

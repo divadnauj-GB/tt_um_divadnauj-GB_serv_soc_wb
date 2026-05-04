@@ -193,6 +193,7 @@ wire [fifo_pointer_w-1:0] top_plus_1 = top + 4'h1;
 
 raminfr #(fifo_pointer_w,8,fifo_depth) rfifo  
         (.clk(clk), 
+		.rst(wb_rst_i),
 			.we(push), 
 			.a(top), 
 			.dpra(bottom), 
@@ -200,7 +201,7 @@ raminfr #(fifo_pointer_w,8,fifo_depth) rfifo
 			.dpo(data8_out)
 		); 
 
-always @(posedge clk or posedge wb_rst_i) // synchronous FIFO
+always @(posedge clk ) // synchronous FIFO
 begin
 	if (wb_rst_i)
 	begin
@@ -271,7 +272,7 @@ begin
 	end
 end   // always
 
-always @(posedge clk or posedge wb_rst_i) // synchronous FIFO
+always @(posedge clk ) // synchronous FIFO
 begin
   if (wb_rst_i)
     overrun   <= 1'b0;
@@ -313,5 +314,7 @@ assign	error_bit = |(word0[2:0]  | word1[2:0]  | word2[2:0]  | word3[2:0]  |
             		      word4[2:0]  | word5[2:0]  | word6[2:0]  | word7[2:0]  |
             		      word8[2:0]  | word9[2:0]  | word10[2:0] | word11[2:0] |
             		      word12[2:0] | word13[2:0] | word14[2:0] | word15[2:0] );
+
+/*assign	error_bit = |(word0[2:0]  | word1[2:0]  );*/
 
 endmodule

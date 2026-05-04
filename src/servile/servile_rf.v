@@ -21,7 +21,7 @@ module servile_rf
     //Internally calculated. Do not touch
     parameter	    rf_width = 2*width,
     parameter	    B = width-1,
-    parameter	    regs = 32-16*EMBEDDED+with_csr*4,
+    parameter	    regs = 32-16*EMBEDDED-1*EMBEDDED+with_csr*4,
     parameter	    rf_l2d = $clog2(regs*32/rf_width))
   (
    input wire		      i_clk,

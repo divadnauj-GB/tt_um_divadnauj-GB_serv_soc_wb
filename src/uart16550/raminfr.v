@@ -83,13 +83,14 @@
 `default_nettype none
 
 module raminfr   
-        (clk, we, a, dpra, di, dpo); 
+        (clk, rst, we, a, dpra, di, dpo); 
 
 parameter addr_width = 4;
 parameter data_width = 8;
 parameter depth = 16;
 
 input clk;   
+input rst;
 input we;   
 input  [addr_width-1:0] a;   
 input  [addr_width-1:0] dpra;   
@@ -103,9 +104,16 @@ wire  [data_width-1:0] di;
 wire  [addr_width-1:0] a;   
 wire  [addr_width-1:0] dpra;   
  
-  always @(posedge clk) begin   
-    if (we)   
+integer idx;
+  always @(posedge clk, posedge rst) begin
+    if (rst) begin
+       for (idx=0; idx<depth; idx=idx+1) begin
+          ram[idx] <= 0;
+       end
+    end else begin
+      if (we)   
       ram[a] <= di;   
+    end
   end   
 //  assign spo = ram[a];   
   assign dpo = ram[dpra];   

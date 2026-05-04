@@ -39,21 +39,22 @@ module tt_um_divadnauj_GB_serv_soc_wb (
 
 	wire sclk;
 
-	reg  rst_sync;
+	reg  [1:0] rst_sync;
 
     assign wb_clk = clk;
 
 	
-	always@(posedge clk, negedge rst_n) begin
+	always@(negedge clk, negedge rst_n) begin
 		if (~rst_n) begin
-			rst_sync <= 0;
+			rst_sync <= 2'b10;
 		end else begin
-			rst_sync <= rst_n;
+			rst_sync[0] <= 1'b1;
+			rst_sync[1] <= ~rst_sync[0];
 		end
 	end
 	
 	
-    assign wb_rst = ~rst_sync;
+    assign wb_rst = rst_sync[1];
 
 
 	assign uo_out[7:0] = gpio0_o[7:0];

@@ -181,6 +181,7 @@ wire [fifo_pointer_w-1:0] top_plus_1 = top + 4'd1;
 
 raminfr #(fifo_pointer_w,fifo_width,fifo_depth) tfifo  
         (.clk(clk), 
+		.rst(wb_rst_i),
 			.we(push), 
 			.a(top), 
 			.dpra(bottom), 
@@ -189,7 +190,7 @@ raminfr #(fifo_pointer_w,fifo_width,fifo_depth) tfifo
 		); 
 
 
-always @(posedge clk or posedge wb_rst_i) // synchronous FIFO
+always @(posedge clk ) // synchronous FIFO
 begin
 	if (wb_rst_i)
 	begin
@@ -225,7 +226,7 @@ begin
 	end
 end   // always
 
-always @(posedge clk or posedge wb_rst_i) // synchronous FIFO
+always @(posedge clk ) // synchronous FIFO
 begin
   if (wb_rst_i)
     overrun   <= 1'b0;

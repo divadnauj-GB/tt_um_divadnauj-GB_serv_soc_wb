@@ -100,11 +100,11 @@ module serv_ctrl
 
    initial if (RESET_STRATEGY == "NONE") o_ibus_adr = RESET_PC;
 
-   always @(posedge clk, posedge i_rst) begin
+   always @(posedge clk) begin
       if (i_rst) begin
          o_ibus_adr <= RESET_PC ;
-         pc_plus_offset_cy_r <= 0;
-         pc_plus_4_cy_r <= 0;
+         //pc_plus_offset_cy_r <= 0;
+         //pc_plus_4_cy_r <= 0;
       end else begin
          pc_plus_4_cy_r <= i_pc_en & pc_plus_4_cy;
          pc_plus_offset_cy_r <= i_pc_en & pc_plus_offset_cy;

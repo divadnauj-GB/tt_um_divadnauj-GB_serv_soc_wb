@@ -10,7 +10,7 @@ module serv_rf_ram
   #(parameter width=0,
     parameter	EMBEDDED = 0,
     parameter csr_regs=4,
-    parameter depth=32*(32-16*EMBEDDED+csr_regs)/width)
+    parameter depth=32*(32-16*EMBEDDED-1*EMBEDDED+csr_regs)/width)
    (input wire i_clk,
     input wire i_rst,
     input wire [$clog2(depth)-1:0] i_waddr,
@@ -21,24 +21,26 @@ module serv_rf_ram
     output wire [width-1:0] 	   o_rdata);
 
    reg [width-1:0] 		   memory [0:depth-1];
-   reg [width-1:0] 		   rdata ;
+   wire [width-1:0] 		   rdata ;
+   reg [$clog2(depth)-1:0] r_raddr ;
 
-   wire wregzero ;
-    
+   wire wregzero = !(|i_waddr[$clog2(depth)-1:5-$clog2(width)]);
+
    integer idx;
    always @(posedge i_clk, posedge i_rst) begin
     if (i_rst) begin
       for (idx=0; idx<depth; idx=idx+1) begin
         memory[idx] <= 0;
       end
-      rdata <= 0;
+      //rdata <= 0;
     end else begin
-       if (i_wen)
-	        memory[i_waddr] <= i_wdata;
-        rdata <= i_ren ? memory[i_raddr] : {width{1'bx}};
+       if (i_wen & (!wregzero))
+	        memory[i_waddr-32/width] <= i_wdata;
+          r_raddr <= i_raddr-32/width;
+        //rdata = memory[i_raddr-32/width];
     end
    end
-
+   assign rdata = memory[r_raddr];
    /* Reads from reg x0 needs to return 0
     Check that the part of the read address corresponding to the register
     is zero and gate the output
@@ -51,12 +53,12 @@ module serv_rf_ram
     */
    reg regzero;
 
-   always @(posedge i_clk, posedge i_rst) begin
-     if (i_rst) begin
+   always @(posedge i_clk) begin
+     /*if (i_rst) begin
         regzero <= 0;
-     end else begin
+     end else begin*/
         regzero <= !(|i_raddr[$clog2(depth)-1:5-$clog2(width)]);
-     end
+     /*end*/
    end
 
    assign o_rdata = rdata & ~{width{regzero}};
