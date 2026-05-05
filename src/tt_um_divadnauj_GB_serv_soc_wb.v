@@ -44,7 +44,7 @@ module tt_um_divadnauj_GB_serv_soc_wb (
     assign wb_clk = clk;
 
 	
-	always@(negedge clk, negedge rst_n) begin
+	always@(posedge clk, negedge rst_n) begin
 		if (~rst_n) begin
 			rst_sync <= 2'b10;
 		end else begin
