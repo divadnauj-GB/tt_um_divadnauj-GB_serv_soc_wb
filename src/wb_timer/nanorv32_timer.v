@@ -47,12 +47,12 @@ module nanorv32_timer(
 	reg								inc_cnt1;
 
 	always @(posedge clk) begin
-		/*if(reset) begin
+		if(reset) begin
 			cnt[1] <= 0;
 			cnt[0] <= 0;
 			inc_cnt1 <= 1'b0;
 		end
-		else begin */
+		else begin 
 			// Lower part of the counter
 			cnt[0] <= cnt[0] + 1'b1;
 			inc_cnt1 <= cnt[0] == 32'hffff_fffe;
@@ -62,7 +62,7 @@ module nanorv32_timer(
 				cnt[1] <= cnt[1] + 1'b1;
 			end
 				
-		/*end*/
+		end
 	end
 
 	// Interrupt comparator

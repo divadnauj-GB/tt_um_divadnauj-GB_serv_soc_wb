@@ -106,7 +106,7 @@ module qqspi #(
       .wr_buffer  (wr_buffer)
   );
 
-  always @(posedge clk) begin
+  always @(posedge clk, posedge reset) begin
     if (reset) begin
       ce <= ~0;
       sclk <= 1'b1;
