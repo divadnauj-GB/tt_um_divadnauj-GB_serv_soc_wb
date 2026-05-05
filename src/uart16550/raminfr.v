@@ -105,16 +105,16 @@ wire  [addr_width-1:0] a;
 wire  [addr_width-1:0] dpra;   
  
 integer idx;
-  always @(posedge clk, posedge rst) begin
-    if (rst) begin
+  always @(posedge clk) begin
+    /*if (rst) begin
        for (idx=0; idx<depth; idx=idx+1) begin
           ram[idx] <= 0;
        end
-    end else begin
+    end else begin*/
       if (we)   
       ram[a] <= di;   
     end
-  end   
+  /*end*/   
 //  assign spo = ram[a];   
   assign dpo = ram[dpra];   
 endmodule 
