@@ -1,0 +1,1 @@
+awk 'NR > 12 && !/nmon/' log.log  > check
