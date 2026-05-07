@@ -31,14 +31,16 @@ Connect the SERVE-SoC to the PC using a USB-to-Serial converter (e.g., FT232RL),
 |tt-io| direction | SoC pinout
 |clk|input  |clk|
 |rst_n|input  |rst_n|
-|ui[7:0]|input  |gpio_i[7:0]|
-|uo[7:0]|output |gpio_o[7:0]|
+|ui[6:0]|input  |gpio_i[6:0]|
+|ui[7]|input  |uart0_rx|
+|uo[6:0]|output |gpio_o[6:0]|
+|uo[7]|output |uart0_tx|
 |uio[0]|output |cs_flash|
 |uio[1]|inout  |sio0|
 |uio[2]|inout  |sio1|
 |uio[3]|output |sck|
-|uio[4]|output |uart0_tx (tt-->usb2serial)|
-|uio[5]|input  |uart0_rx (tt<--usb2serial)|
+|uio[4]|output |sio2|
+|uio[5]|input  |sio3|
 |uio[6]|output |cs_ram0|
 |uio[7]|output |cs_ram1|
 
