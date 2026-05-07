@@ -24,7 +24,7 @@ set_output_delay -clock [get_clocks $::env(CLOCK_PORT)] -min $output_hold_delay_
 set spi_clk_setup_delay_value [expr $::env(CLOCK_PERIOD) * 0.2]
 set_output_delay -clock [get_clocks $::env(CLOCK_PORT)] -max $spi_clk_setup_delay_value {uio_out[3]}
 
-set_max_transition 8.6 [current_design]
+set_max_transition 8.5 [current_design]
 set_max_fanout 16 [current_design]
 
 

@@ -57,16 +57,20 @@ module tt_um_divadnauj_GB_serv_soc_wb (
     assign wb_rst = rst_sync[1];
 
 
-	assign uo_out[7:0] = gpio0_o[7:0];
-	assign gpio0_i[7:0] = ui_in[7:0];
+	assign uo_out[6:0] = gpio0_o[6:0];
+	assign gpio0_i = {1'b0,ui_in[6:0]};
+
+	assign uo_out[7] = uart0_tx;
+	//assign uio_out[5] = 1'b0;
+	assign uart0_rx = ui_in[7];
 
 
 	assign uio_out[0] = w_ce[0];
 	assign uio_out[1] = w_sio0_si_mosi_o;
 	assign uio_out[2] = w_sio1_so_miso_o;
 	assign uio_out[3] = sclk;
-	//assign uio_out[4] = w_sio2_o;
-	//assign uio_out[5] = w_sio3_o;
+	assign uio_out[4] = w_sio2_o;
+	assign uio_out[5] = w_sio3_o;
 	assign uio_out[6] = w_ce[1];
 	assign uio_out[7] = w_ce[2];
 
@@ -74,28 +78,28 @@ module tt_um_divadnauj_GB_serv_soc_wb (
 	assign uio_oe[1] = w_sio_oe[0];
 	assign uio_oe[2] = w_sio_oe[1];
 	assign uio_oe[3] = 1'b1; // sclk is always output
-	//assign uio_oe[4] = w_sio_oe[1];
-	//assign uio_oe[5] = w_sio_oe[3];
-	assign uio_oe[4] = 1'b1; // uart0_tx is always output 
-	assign uio_oe[5] = 1'b0; // uart0_rx is always input
+	assign uio_oe[4] = w_sio_oe[1];
+	assign uio_oe[5] = w_sio_oe[3];
+	//assign uio_oe[4] = 1'b1; // uart0_tx is always output 
+	//assign uio_oe[5] = 1'b0; // uart0_rx is always input
 	assign uio_oe[6] = 1'b1; // w_ce[1] is always output
 	assign uio_oe[7] = 1'b1; // w_ce[2] is always output
 
 
     assign w_sio0_si_mosi_i = uio_in[1];
 	assign w_sio1_so_miso_i = uio_in[2];
-	//assign w_sio2_i			= uio_in[4];
-	//assign w_sio3_i			= uio_in[5];
+	assign w_sio2_i			= uio_in[4];
+	assign w_sio3_i			= uio_in[5];
 
     
 
 
-	assign uio_out[4] = uart0_tx;
-	assign uio_out[5] = 1'b0;
-	assign uart0_rx = uio_in[5];
+	//assign uio_out[4] = uart0_tx;
+	//assign uio_out[5] = 1'b0;
+	//assign uart0_rx = uio_in[5];
 
-	assign w_sio2_i			= 1'b0;
-	assign w_sio3_i			= 1'b0;
+	//assign w_sio2_i			= 1'b0;
+	//assign w_sio3_i			= 1'b0;
 
 
 	serv_soc_wb #(

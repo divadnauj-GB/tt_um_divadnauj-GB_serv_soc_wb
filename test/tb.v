@@ -70,7 +70,7 @@ module tb ();
   // Dump the signals to a FST file. You can view it with gtkwave or surfer.
   initial begin
     $dumpfile("tb.fst");
-    $dumpvars(1, tb);
+    $dumpvars(0, tb);
     #1;
   end
 
@@ -130,31 +130,32 @@ module tb ();
 	);
 
 	wire spi_io3;
-	assign spi_io3 =  1'bz;
+	assign spi_io3 =  uio_oe[5]  ? uio_out[5] : 1'bz;
 	wire spi_io2 ;
-	assign spi_io2 = 1'bz;
+	assign spi_io2 =  uio_oe[4]  ? uio_out[4] : 1'bz;
 	wire spi_io1;
 	assign spi_io1 =  uio_oe[2]  ? uio_out[2] : 1'bz;
 	wire spi_io0 ;
-	assign spi_io0 = uio_oe[1]  ? uio_out[1] : 1'bz;
+	assign spi_io0 =  uio_oe[1]  ? uio_out[1] : 1'bz;
 
 
-	//assign w_sio0_si_mosi_i = spi_io0;
-	//assign w_sio1_so_miso_i = spi_io1;
-	//assign w_sio2_i			= spi_io2;
-	//assign w_sio3_i			= spi_io3;
+	assign w_sio0_si_mosi_i = spi_io0;
+	assign w_sio1_so_miso_i = spi_io1;
+	assign w_sio2_i			= spi_io2;
+	assign w_sio3_i			= spi_io3;
 
   assign gpio0_i = 8'b0000_0000;
-  assign ui_in = gpio0_i;
-  assign gpio0_o = uo_out;
+  assign ui_in[6:0] = gpio0_i[6:0];
+  assign gpio0_o = {1'b0,uo_out[6:0]};
   assign ena = 1'b1;  
+
+  assign ui_in[7]=uart0_rx;
+  assign uart0_tx=uo_out[7];
 
   assign w_ce[0] = uio_out[0];
   //assign w_sio0_si_mosi_o = uio_out[1];
   //assign w_sio1_so_miso_o = uio_out[2];
   assign sclk = uio_out[3];
-  assign uart0_tx = uio_out[4];
-  //
   assign w_ce[1] = uio_out[6];
   assign w_ce[2] = uio_out[7];
   
@@ -162,8 +163,8 @@ module tb ();
   assign uio_in[1] = spi_io0;
   assign uio_in[2] = spi_io1;
   assign uio_in[3] = 1'b0;
-  assign uio_in[4] = 1'b0;
-  assign uio_in[5] = uart0_rx;
+  assign uio_in[4] = spi_io2;
+  assign uio_in[5] = spi_io3;
   assign uio_in[6] = 1'b0;
   assign uio_in[7] = 1'b0;
 
