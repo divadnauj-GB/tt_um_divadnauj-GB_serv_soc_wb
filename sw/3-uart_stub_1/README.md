@@ -35,23 +35,19 @@ Finally, the `nmon-loader.sh` is an script the allows to program the `SERVE-SoC`
 
 Connect the SERVE-SoC to the PC using a USB-to-Serial converter (e.g., FT232RL), following this schematic diagram. The `uart0_tx `must be connected to the RX pin on the USB-to-Serial converter and the `uart0_rx` must be connected to the TX pin on the USB-to-Serial converter. The GND of the SERVE-SoC mut be connected to the GND of the USB-to-Serial converter.
 
-||||
-|-|-|-|
-|tt-io| direction | SoC pinout
-|clk|input  |clk|
-|rst_n|input  |rst_n|
-|ui[6:0]|input  |gpio_i[6:0]|
-|ui[7]|input  |uart0_rx|
-|uo[6:0]|output |gpio_o[6:0]|
-|uo[7]|output |uart0_tx|
-|uio[0]|output |cs_flash|
-|uio[1]|inout  |sio0|
-|uio[2]|inout  |sio1|
-|uio[3]|output |sck|
-|uio[4]|output |sio2|
-|uio[5]|input  |sio3|
-|uio[6]|output |cs_ram0|
-|uio[7]|output |cs_ram1|
+
+|||||
+|-|-|-|-|
+|#|Input (ui)|Output (uo) |Bidirectional (uio)|
+|0|gpio_i[0] | gpio_o[0] | cs_flash |
+|1|gpio_i[1] | gpio_o[1] | sio0 |
+|2|gpio_i[2] | gpio_o[2] | sio1 |
+|3|gpio_i[3] | gpio_o[3] | sck |
+|4|gpio_i[4] | gpio_o[4] | sio2 |
+|5|gpio_i[5] | gpio_o[5] | sio3 |
+|6|gpio_i[6] | gpio_o[6] | cs_ram0 |
+|7|uart0_rx  | uart0_tx  | cs_ram1 |
+
 
 ## Compile and program de SoC with the application
 
