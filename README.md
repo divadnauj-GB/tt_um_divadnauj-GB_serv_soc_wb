@@ -86,11 +86,11 @@ echo 'export PATH=/opt/riscv32e/bin:$PATH' >> ~/.bashrc
 
 ### Run Examples
 
-> The following sugested schematic should be implemented to try out the proposed examples. The SoC requires external Flash and SRAM memoeries under the SPI or QSPI protocols; you can either use the [QSPI Pmod](https://github.com/mole99/qspi-pmod/tree/main) board or individual memories W25Q128 and APS6404L as depicted in the schematic. The clock must be established to run at 25MHz, which is the maximum achievable SoC frequency. It is worth noting that any lower clk frequency can be used, in that case you need to modify the bootloader freqeuncy accordingly. 
+> The following sugested schematic should be implemented to try out the proposed examples. The SoC requires external Flash and SRAM memories under the SPI or QSPI protocols; you can either use the [QSPI Pmod](https://github.com/mole99/qspi-pmod/tree/main) board or individual memories W25Q128 and APS6404L as depicted in the schematic. The clock must be established to run at 25MHz, which is the maximum achievable SoC frequency. It is worth noting that any lower clk frequency can be used, in that case you need to modify the bootloader frequency accordingly. 
 
 > The examples require to connect switches to the **gpio_i[\*]** ports and LEDs to the **gpio_o[\*]** ports. However, if you want to try your own programs, you can use these ports to connect any peripheral of your preference.
 
-> Finally, an USB to Serial converter is required to evalaute and interact with most of the examples. Also, programming the SoC is also possible via the UART. 
+> Finally, an USB to Serial converter is required to evaluate and interact with most of the examples. Furthermore, programming the SoC is also possible via the UART. 
 
 > ![alt text](./docs/schematic.svg)
 
@@ -112,7 +112,7 @@ echo 'export PATH=/opt/riscv32e/bin:$PATH' >> ~/.bashrc
     ```
     > Eventually another way of programming the SoC can be provided in the future.
 
-The following is a set of basic examples that have been prepared to use the SERV-E SoC. Every example has details about how to compile and program on the SERV-E- SoC.
+The following is a set of basic examples that have been prepared to use the SERV-E SoC. Every example has details about how to compile and program on the SERV-E SoC.
 
 [0-ricv-nmon](./sw/0-riscv-nmon/): This is a basic bootloader living in the flash memory, it can be used to dump a program into de SRAM comming from the uart port.
 
@@ -120,9 +120,9 @@ The following is a set of basic examples that have been prepared to use the SERV
 
 [2-gpio_echo](./sw/2-gpio_echo/): Simple GPIO echo, copies inputs and put it to the outputs.
 
-[3-uart_stub_1](./sw/3-uart_stub_1/): Uses the nmon uar function to access the uart.
+[3-uart_stub_1](./sw/3-uart_stub_1/): Uses the nmon uart function to access the uart.
 
-[4-uart_stub_2](./sw/4-uart_stub_2/): Uses the nmon uar function to access the uart.
+[4-uart_stub_2](./sw/4-uart_stub_2/): Uses the nmon uart function to access the uart.
 
 [5-uart_puts](./sw/5-uart_puts/): Explicit uart driver implementation, just transmision from SoC to PC.
 
