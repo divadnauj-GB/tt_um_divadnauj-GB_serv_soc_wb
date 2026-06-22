@@ -13,7 +13,7 @@ void main(void) {
     int led_val = 1; // Initialize LEDs to off (assuming active low)
     while (1) {
         *gpio = led_val; // Set LEDs
-        delay(200000);   // Simple delay
+        delay(20000);   // Simple delay
         led_val <<=1; // shift left
         if (led_val > 0x80) led_val = 1; // reset
     }

@@ -110,7 +110,28 @@ echo 'export PATH=/opt/riscv32e/bin:$PATH' >> ~/.bashrc
     # check the actual USB port in your system
     expect nmon-loader.sh application.nmon /dev/ttyUSB0 115200
     ```
-    > Eventually another way of programming the SoC can be provided in the future.
+
+4. Alternatively you can use the available bootloader using a python script.
+
+    ```bash
+    # create a python environment and install the following packages: pyelftools, pyserial, tqdm. 
+    cd ./sw/1-blink_led
+    make clean build
+    python ../0-riscv-nmon/bootloader.py <SerialPort> application.elf
+    ```
+
+    After running the command you will get a similar outpus as the following: 
+    ```log
+    [INFO] ELF: application.elf
+    [INFO] Words to load: 2101
+    [INFO] Waiting for nmon prompt...
+    [INFO] Connected
+    [INFO] Loading your program: application.elf
+    100%|███████████████████| 2101/2101 [00:33<00:00, 62.61words/s]
+    [SUCCESS] Program loaded and started!
+    [INFO] Open a serial terminal to see the output (115200 8N1)
+    ```
+
 
 The following is a set of basic examples that have been prepared to use the SERV-E SoC. Every example has details about how to compile and program on the SERV-E SoC.
 

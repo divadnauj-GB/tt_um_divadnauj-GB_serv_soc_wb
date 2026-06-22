@@ -42,7 +42,7 @@ nmon: application.nmon
 
 application.elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $@ 
-	/opt/riscv/bin/riscv32-unknown-elf-size -A -x $@
+	$(CROSS_COMPILE)size -A -x $@
 
 #START_ADDR := $(shell $(NM) *.elf | awk '/ _start/ {print $$1}')
 

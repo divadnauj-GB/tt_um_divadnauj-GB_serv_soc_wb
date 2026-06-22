@@ -16,7 +16,7 @@ exec sh -c "sleep 3 < $modem" &
 
 # serial port parameters
 exec stty -F $modem $speed raw -clocal -echo -istrip -hup
-
+#exec stty -f $modem $speed raw -clocal -echo -istrip -hupcl
 # connect
 send_user "connecting to $modem, exit with ~.\n"
 spawn -open [open $modem w+]

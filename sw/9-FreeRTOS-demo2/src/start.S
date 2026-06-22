@@ -71,22 +71,22 @@ start:
 	addi x13, zero, 0
 	addi x14, zero, 0
 	addi x15, zero, 0
-	addi x16, zero, 0
-	addi x17, zero, 0
-	addi x18, zero, 0
-	addi x19, zero, 0
-	addi x20, zero, 0
-	addi x21, zero, 0
-	addi x22, zero, 0
-	addi x23, zero, 0
-	addi x24, zero, 0
-	addi x25, zero, 0
-	addi x26, zero, 0
-	addi x27, zero, 0
-	addi x28, zero, 0
-	addi x29, zero, 0
-	addi x30, zero, 0
-	addi x31, zero, 0
+	//addi x16, zero, 0
+	//addi x17, zero, 0
+	//addi x18, zero, 0
+	//addi x19, zero, 0
+	//addi x20, zero, 0
+	//addi x21, zero, 0
+	//addi x22, zero, 0
+	//addi x23, zero, 0
+	//addi x24, zero, 0
+	//addi x25, zero, 0
+	//addi x26, zero, 0
+	//addi x27, zero, 0
+	//addi x28, zero, 0
+	//addi x29, zero, 0
+	//addi x30, zero, 0
+	//addi x31, zero, 0
 
 	/* Initialize global pointer */
 	la gp, __global_pointer$

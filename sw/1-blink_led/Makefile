@@ -38,7 +38,7 @@ nmon: application.nmon
 
 application.elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $@ 
-	riscv32-unknown-elf-size -A -x $@
+	$(CROSS_COMPILE)size -A -x $@
 
 #START_ADDR := $(shell $(NM) *.elf | awk '/ _start/ {print $$1}')
 
@@ -59,4 +59,4 @@ application.nmon: application.bin
 
 
 clean:
-	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp *.txt *.hex *.log
+	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp* *.txt *.hex *.log 
