@@ -19,19 +19,23 @@ ifdef QEMU
 	BOARD ?=qemu
 	SIM=qemu-system-riscv32 -machine virt -nographic --no-reboot -bios
 	PATCH_SH=
+	DEFINT16=
 	
 else ifdef  SPIKE
 	CFLAGS+=-O2 -DSPIKE 
 	BOARD ?=SERVE-wb-soc1
 	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x01800000:0x1000000 --dtb=utils/serv2.dtb 
 	PATCH_SH=
+	DEFINT16=
 else
 	CFLAGS+=-O2
 	BOARD ?=SERVE-wb-soc
 	ifdef PATCH
 		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
+		DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
 	else
 		PATCH_SH=
+		DEFINT16=
 	endif
 endif
 
@@ -48,7 +52,7 @@ ARCH=-march=rv32e_zicsr -mabi=ilp32e
 
 AFLAGS +=$(ARCH) $(INC) 
 CFLAGS_RV32E = $(ARCH) -ffreestanding -Wdouble-promotion -Wfloat-conversion -specs=nano.specs --specs=nosys.specs
-CFLAGS+= $(INC) -Wall -std=c11 -nostdlib $(CFLAGS_RV32E) $(COPT) -D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
+CFLAGS+= $(INC) -Wall -std=c11 -nostdlib $(CFLAGS_RV32E) $(COPT) $(DEFINT16)
 
 
 LDFLAGS +=$(ARCH) $(INC) -nostdlib -ffreestanding -specs=nano.specs --specs=nosys.specs -Wl,--no-relax,--strip-debug,-Map=$@.map,-Bstatic,-T,$(BOARD).lds,--gc-sections
