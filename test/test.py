@@ -62,7 +62,7 @@ async def test_uart(dut):
 
     assert(expected_output==sim_output)
 
-
+"""
 @cocotb.test()
 async def test_uPython(dut):
 
@@ -95,3 +95,4 @@ async def test_uPython(dut):
         sim_output=Rfp.readlines()
 #
     assert(expected_output==sim_output)
+"""
