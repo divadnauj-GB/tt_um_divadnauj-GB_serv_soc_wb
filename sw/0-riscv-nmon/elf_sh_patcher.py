@@ -125,33 +125,33 @@ def main():
                 lw {ops[0]},0(sp)\n \
                 addi sp,sp,4\n "
                 
-                idx+=1
-               
-                with open(args.elf,"r+b") as file:
-                    inst = encode_j(
-                    rd=0,
-                    pc=int(insn.address),
-                    target=int(insert_addr),
-                    )             
-                    print(inst.hex())
-                    file.seek(file_off)
-                    file.write(inst)
+                if "zero" not in ops[0]:
+                    with open(args.elf,"r+b") as file:
+                        inst = encode_j(
+                        rd=0,
+                        pc=int(insn.address),
+                        target=int(insert_addr),
+                        )             
+                        print(inst.hex())
+                        file.seek(file_off)
+                        file.write(inst)
 
-                with open(args.elf,"r+b") as file:
-                    compile_asm(ASM_TEMPLATE.format(name=f"sh_{idx}",code=code),args.cross_compiler)
-                    with open("patch.bin", "rb") as f:
-                        replacement = f.read()
-                    inst = encode_j(
-                    rd=0,
-                    pc=int(insert_addr+28),
-                    target=int(insn.address+4),
-                    )
-                    replacement=replacement+inst
-                    print(replacement.hex())
-                    file.seek(patch_off)
-                    file.write(replacement)
+                    with open(args.elf,"r+b") as file:
+                        compile_asm(ASM_TEMPLATE.format(name=f"sh_{idx}",code=code),args.cross_compiler)
+                        with open("patch.bin", "rb") as f:
+                            replacement = f.read()
+                        inst = encode_j(
+                        rd=0,
+                        pc=int(insert_addr+28),
+                        target=int(insn.address+4),
+                        )
+                        replacement=replacement+inst
+                        print(replacement.hex())
+                        file.seek(patch_off)
+                        file.write(replacement)
 
-                insert_addr+=32
+                    insert_addr+=32
+                    idx+=1
                 
                 
 
