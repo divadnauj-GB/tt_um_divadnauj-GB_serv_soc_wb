@@ -7,6 +7,8 @@ SPIKE ?=
 
 CROSS = 1
 
+PATCH ?=
+
 QSTR_DEFS = qstrdefsport.h
 
 MICROPY_ROM_TEXT_COMPRESSION ?= 0
@@ -26,7 +28,11 @@ else ifdef  SPIKE
 else
 	CFLAGS+=-O2
 	BOARD ?=SERVE-wb-soc
-	PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
+	ifdef PATCH
+		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
+	else
+		PATCH_SH=
+	endif
 endif
 
 # Include py core make definitions.
