@@ -6,11 +6,12 @@
 #include "py/builtin.h"
 #include "py/compile.h"
 #include "py/runtime.h"
+#include "py/repl.h"
 #include "py/gc.h"
 #include "py/mperrno.h"
 #include "uPython/gchelper.h"
 #include "shared/runtime/pyexec.h"
-
+#include "shared/readline/readline.h"
 
 
 #include "soc_gpio.h"

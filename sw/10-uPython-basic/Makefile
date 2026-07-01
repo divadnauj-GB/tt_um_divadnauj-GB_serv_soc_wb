@@ -23,7 +23,7 @@ ifdef QEMU
 else ifdef  SPIKE
 	CFLAGS+=-O2 -DSPIKE 
 	BOARD ?=SERVE-wb-soc1
-	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x01800000:0x1000000 -l -d --dtb=utils/serv2.dtb 
+	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x01800000:0x1000000 --dtb=utils/serv2.dtb 
 	PATCH_SH=
 else
 	CFLAGS+=-O2
@@ -48,7 +48,7 @@ ARCH=-march=rv32e_zicsr -mabi=ilp32e
 
 AFLAGS +=$(ARCH) $(INC) 
 CFLAGS_RV32E = $(ARCH) -ffreestanding -Wdouble-promotion -Wfloat-conversion -specs=nano.specs --specs=nosys.specs
-CFLAGS+= $(INC) -Wall -Werror -std=c11 -nostdlib $(CFLAGS_RV32E) $(COPT)
+CFLAGS+= $(INC) -Wall -std=c11 -nostdlib $(CFLAGS_RV32E) $(COPT) -D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
 
 
 LDFLAGS +=$(ARCH) $(INC) -nostdlib -ffreestanding -specs=nano.specs --specs=nosys.specs -Wl,--no-relax,--strip-debug,-Map=$@.map,-Bstatic,-T,$(BOARD).lds,--gc-sections
@@ -69,6 +69,9 @@ SRC_C = \
     shared/runtime/pyexec.c \
     shared/runtime/stdout_helpers.c \
     shared/libc/printf.c \
+	shared/timeutils/timeutils.c \
+	shared/libc/string0.c \
+	$(BUILD)/_frozen_mpy.c \
     
 
 
@@ -78,9 +81,9 @@ ASM_SRC = $(wildcard *.S)
 # Define source files containung qstrs.
 SRC_QSTR += shared/readline/readline.c shared/runtime/pyexec.c 
 
-PY_CORE_O := $(filter-out $(BUILD)/py/nlrrv32.o, $(PY_CORE_O))
+PY_O := $(filter-out $(BUILD)/py/nlrrv32.o, $(PY_O))
 # Define the required object files.
-OBJ += $(PY_CORE_O) 
+OBJ += $(PY_O) 
 OBJ += $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(addprefix $(BUILD)/, $(SRC_CXX:.cpp=.o))
 OBJ += $(addprefix $(BUILD)/, $(ASM_SRC:.S=.o))
@@ -91,9 +94,10 @@ all: $(BUILD)/firmware.elf
 nmon: $(BUILD)/firmware.nmon
 
 
-#$(BUILD)/_frozen_mpy.c: $(TOP)/tests/frozen/frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
-#	$(ECHO) "MISC freezing bytecode"
-#	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
+$(BUILD)/_frozen_mpy.c: $(TOP)/tests/frozen/frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
+	$(ECHO) "MISC freezing bytecode"
+	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
+
     
 # Define how to build the firmware.
 $(BUILD)/firmware.elf: $(OBJ)
@@ -103,7 +107,7 @@ $(BUILD)/firmware.elf: $(OBJ)
 	$(PATCH_SH)
 
 run: $(BUILD)/firmware.elf
-	 $(SIM) $(BUILD)/firmware.elf  2> spike.log
+	 $(SIM) $(BUILD)/firmware.elf 
 
 	
 $(BUILD)/firmware.bin: $(BUILD)/firmware.elf

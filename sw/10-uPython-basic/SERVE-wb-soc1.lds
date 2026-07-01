@@ -14,7 +14,7 @@ SECTIONS {
     .patch : ALIGN(4){
         _spatch = .;
         KEEP(*(.patch))
-        . += 5*1024; /* 2K */
+        . += 1*512; /* 2K */
         _epatch = .;
     }
 
