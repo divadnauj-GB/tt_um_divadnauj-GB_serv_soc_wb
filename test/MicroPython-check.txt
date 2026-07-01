@@ -1,0 +1,16 @@
+
+
+nmon commands:
+ q - quit
+ d <addr> - read 32-bit word from <addr>
+ w <addr> <val> - write 32-bit word to <addr>
+ g <addr> - jump to <addr>
+   use <ESC> key to interrupt current command
+
+nmon> g 01800000
+MicroPython v1.28.0 on 2026-06-30; serv-soc-wb with SERV-E
+>>> 2
+2
+>>> print(2)
+2
+>>> 

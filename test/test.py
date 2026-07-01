@@ -36,9 +36,11 @@ class monitor_uart():
 
 @cocotb.test()
 async def test_uart(dut):
-
     dut._log.setLevel(logging.DEBUG)
     clock = dut.clk
+    dut.rst_n.value=1
+    await ClockCycles(dut.clk, 10)
+    dut.rst_n.value=0
     uart_source = UartSource(dut.uart0_rx, baud=115200, bits=8)
     uart_monitor = monitor_uart(dut.uart0_tx)
     cocotb.start_soon(uart_monitor.start())
@@ -58,4 +60,38 @@ async def test_uart(dut):
     with open(OUTPUT_SIM,"r") as Rfp:
         sim_output=Rfp.readlines()
 
+    assert(expected_output==sim_output)
+
+
+@cocotb.test()
+async def test_uPython(dut):
+
+    dut._log.setLevel(logging.DEBUG)
+    clock = dut.clk
+    dut.rst_n.value=1
+    await ClockCycles(dut.clk, 10)
+    dut.rst_n.value=0
+    uart_source = UartSource(dut.uart0_rx, baud=115200, bits=8)
+    uart_monitor = monitor_uart(dut.uart0_tx)
+    cocotb.start_soon(uart_monitor.start())
+    await ClockCycles(dut.clk, 10)
+
+    await ClockCycles(dut.clk, int(10e-3/40e-9))
+   
+    await uart_send(dut.clk, uart_source, "g01800000")
+
+    await ClockCycles(dut.clk, int(200e-3/40e-9))
+    #await ClockCycles(dut.clk, 20000 * 1000)
+    await uart_send(dut.clk, uart_source, "2\r\n")
+    await ClockCycles(dut.clk, int(400e-3/40e-9))
+    await uart_send(dut.clk, uart_source, "print(2)\r\n")
+    await ClockCycles(dut.clk, int(400e-3/40e-9))
+
+    
+    with open("MicroPython-check.txt","r") as Gfp:
+        expected_output=Gfp.readlines()
+#
+    with open(OUTPUT_SIM,"r") as Rfp:
+        sim_output=Rfp.readlines()
+#
     assert(expected_output==sim_output)

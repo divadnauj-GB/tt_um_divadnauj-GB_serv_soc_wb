@@ -70,7 +70,7 @@ module tb ();
   // Dump the signals to a FST file. You can view it with gtkwave or surfer.
   initial begin
     $dumpfile("tb.fst");
-    $dumpvars(0, tb);
+    $dumpvars(1, tb);
     #1;
   end
 
@@ -214,7 +214,10 @@ module tb ();
       .dio ({spi_io3, spi_io2, spi_io1, spi_io0})
   );
 
-  psram psram_II (
+  psram #(
+      // change the hex file to match your project
+      .FILENAME("./firmware-f2.hex")
+  )psram_II (
       .ce_n(spi_ce2),
       .sck (spi_psram_clk),
       .dio ({spi_io3, spi_io2, spi_io1, spi_io0})
