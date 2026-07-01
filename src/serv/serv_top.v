@@ -653,6 +653,7 @@ module serv_top
 	    .i_clk            (clk),
 	    .i_rst            (i_rst),
 	    .i_ibus_rdt       (i_ibus_rdt),
+      .i_ibus_adr     (o_ibus_adr),
 	    .i_ibus_ack       (i_ibus_ack),
 	    .i_rd_addr        (rd_addr       ),
 	    .i_cnt_en         (cnt_en        ),

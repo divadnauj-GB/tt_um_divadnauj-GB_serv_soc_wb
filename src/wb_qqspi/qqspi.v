@@ -277,11 +277,13 @@ module align_wdata (
       4'b0011: begin
         byte_offset = 0;
         wr_buffer[31:16] = wdata[15:0];
+        //wr_buffer[31:16] = {wdata[7:0], wdata[15:8]};
         wr_cycles = 16;
       end
       4'b1100: begin
         byte_offset = 2;
         wr_buffer[31:16] = wdata[31:16];
+        //wr_buffer[31:16] = {wdata[23:16], wdata[31:24]};
         wr_cycles = 16;
       end
       4'b1111: begin

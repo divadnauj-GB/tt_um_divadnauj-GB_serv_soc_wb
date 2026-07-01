@@ -57,6 +57,7 @@ module serv_debug
     input wire	      i_clk,
     input wire	      i_rst,
     input wire [31:0] i_ibus_rdt,
+    input wire [31:0]  i_ibus_adr,
     input wire	      i_ibus_ack,
     input wire [4:0]  i_rd_addr,
     input wire	      i_cnt_en,
@@ -78,6 +79,13 @@ module serv_debug
    reg		      update_mstatus;
    reg		      update_mie;
    reg		      update_mcause;
+   reg [63:0]      clk_counter;
+   reg i_wend, i_wend1;
+
+   reg [63:0]      clk_counter_sn;
+   reg [31:0]      i_ibus_rdt_sn;
+   reg [31:0]      i_ibus_adr_sn;
+   reg i_ibus_ack_sn;
 
    reg [31:0]	      dbg_rd = 32'hxxxxxxxx;
    reg [31:0]	      dbg_csr = 32'hxxxxxxxx;
@@ -122,10 +130,11 @@ module serv_debug
 
    always @(posedge i_clk) begin
       update_rd <= i_cnt_done & i_wen0;
-
+      i_wend <= i_cnt_done;
+      i_wend1 <= i_wend;
+      i_ibus_ack_sn <= i_ibus_ack;
       if (i_wen0)
         dbg_rd <= {i_wdata0,dbg_rd[31:W]};
-
       //End of instruction that writes to RF
       if (update_rd) begin
 	 case (i_rd_addr)
@@ -182,7 +191,26 @@ module serv_debug
       if (update_mstatus)  dbg_mstatus  <= dbg_csr;
       if (update_mie)      dbg_mie      <= dbg_csr;
       if (update_mcause)   dbg_mcause   <= dbg_csr;
+
+
+      if (i_ibus_ack) begin
+         clk_counter_sn <= clk_counter;
+         i_ibus_adr_sn  <= i_ibus_adr;
+         i_ibus_rdt_sn  <= i_ibus_rdt;
+      end
+      if(i_ibus_ack_sn) begin
+         $display("clk=%016h,pc=%08h,ins=%08h",clk_counter_sn,i_ibus_adr_sn,i_ibus_rdt_sn);
+      end
+      if (i_ibus_ack) begin
+         $display("x00(zr): %08h x01(ra): %08h x02(sp): %08h x03(gp): %08h ",0,x1,x2,x3);
+         $display("x04(tp): %08h x05(t0): %08h x06(t1): %08h x07(t2): %08h ",x4,x5,x6,x7);
+         $display("x08(s0): %08h x09(s1): %08h x10(a0): %08h x11(a1): %08h ",x8,x9,x10,x11);
+         $display("x12(a2): %08h x13(a3): %08h x14(a4): %08h x15(a5): %08h ",x12,x13,x14,x15);
+         $display(";");
+      end
    end
+
+
 
    reg LUI, AUIPC, JAL, JALR, BEQ, BNE, BLT, BGE, BLTU, BGEU, LB, LH, LW, LBU, LHU, SB, SH, SW, ADDI, SLTI, SLTIU, XORI, ORI, ANDI,SLLI, SRLI, SRAI, ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND, FENCE, ECALL, EBREAK;
    reg CSRRW, CSRRS, CSRRC, CSRRWI, CSRRSI, CSRRCI;
@@ -350,4 +378,14 @@ module serv_debug
 
 `endif
 
+
+always @(posedge i_clk, posedge i_rst) begin
+   if (i_rst) begin
+      clk_counter <= 0;
+   end else begin
+      if (i_ibus_ack) begin
+         clk_counter <= clk_counter+1;
+      end
+   end
+end
 endmodule
