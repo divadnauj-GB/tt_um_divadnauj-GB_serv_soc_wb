@@ -54,6 +54,8 @@ application.nmon: application.bin
 	awk '{print "expect \"nmon> \"\n" $$0}' .tmp > $@ ; \
 	echo "expect \"nmon> \"" >> $@ ; \
 	echo "send \"g$$START_ADDR\"" >> $@ ; \
+	echo "@000000" > firmware-f.hex
+	hexdump -v -e '"" 32/1 "%02x " "\n"' $< >> firmware-f.hex
 	rm -f .tmp
 
 
