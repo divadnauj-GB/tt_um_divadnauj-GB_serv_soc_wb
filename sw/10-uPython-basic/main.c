@@ -18,8 +18,6 @@
 #include "soc_uart.h"
 
 
-__attribute__((section(".patch")))
-const unsigned char patch_area[4] = {0};
 
 #if MICROPY_ENABLE_COMPILER
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {

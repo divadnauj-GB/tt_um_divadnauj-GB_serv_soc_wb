@@ -261,3 +261,8 @@ char *_sbrk (int delta)
 	end_of_data += delta;
 	return ptr;
 }
+
+__attribute__((section(".patch")))
+void patch_function(void) {
+    __asm__ volatile("ebreak");
+}

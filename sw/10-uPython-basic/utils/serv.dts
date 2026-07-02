@@ -48,17 +48,17 @@
 		compatible = "ucbbar,spike-bare-soc", "simple-bus";
 		ranges;
 
-		clint@200000 {
+		clint@92000000 {
 			compatible = "riscv,clint0";
 			interrupts-extended = <0x01 0x03 0x01 0x07>;
-			reg = <0x00 0x200000 0x00 0xc0000>;
+			reg = <0x00 0x92000000 0x00 0xc0000>;
 		};
 
-		plic@c000000 {
+		plic@93000000 {
 			compatible = "riscv,plic0";
 			#address-cells = <0x02>;
 			interrupts-extended = <0x01 0x0b 0x01 0x09>;
-			reg = <0x00 0xc000000 0x00 0x1000000>;
+			reg = <0x00 0x93000000 0x00 0x1000000>;
 			riscv,ndev = <0x1f>;
 			riscv,max-priority = <0x0f>;
 			#interrupt-cells = <0x01>;

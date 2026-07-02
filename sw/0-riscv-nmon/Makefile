@@ -1,6 +1,6 @@
 PROJECT = serv-e-wb-soc_25MHz_115200
 FLASH_SIZE = 16777216
-CROSS_COMPILE=riscv32-unknown-elf-
+CROSS_COMPILE=riscv64-unknown-elf-
 
 CC=$(CROSS_COMPILE)gcc
 OBJCOPY=$(CROSS_COMPILE)objcopy
@@ -50,15 +50,18 @@ START_ADDR:=80000000
 	@xxd -e -c 4 -o 0x$(START_ADDR) -g 4 $< | awk '{gsub(":", "", $$1); print ""$$1$$2""}'  > .tmp ;
 	echo "@000000" > firmware.hex
 	hexdump -v -e '"" 32/1 "%02x " "\n"' $< >> firmware.hex
-	truncate -s 16M $(PROJECT).bin
-	mv $(PROJECT).bin flash.bin
+	# truncate -s 16M $(PROJECT).bin
+	# mv $(PROJECT).bin nmon_25MHz.bin
 
 	# dd if=/dev/zero of=flash.bin bs=1 count=$(FLASH_SIZE)
 	# dd if=$(PROJECT).bin of=flash.bin conv=notrunc
 	# Optional: Append extra data to a specific offset
 	# echo "ExtraData" | dd of=flash.bin bs=1 seek=10000000 conv=notrunc
 
-
+image: $(PROJECT).bin
+	cp $(PROJECT).bin nmon_25MHz.bin
+	truncate -s 16M nmon_25MHz.bin
+	@echo "Firmware binary generated: $<"
 
 clean:
 	rm -f *.o *.elf *.img *.nmon symbols.txt .tmp *.txt *.hex *.bin

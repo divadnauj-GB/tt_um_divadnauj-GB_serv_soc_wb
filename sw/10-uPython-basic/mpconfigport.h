@@ -35,10 +35,10 @@ typedef uintptr_t mp_uint_t; // must be pointer size
 #include <alloca.h>
 
 // Define the port's name and hardware.
-#define MICROPY_HW_BOARD_NAME "serv-soc-wb"
+#define MICROPY_HW_BOARD_NAME "ttgf26a-serv-soc-wb"
 #define MICROPY_HW_MCU_NAME   "SERV-E"
 
-#define MICROPY_HEAP_SIZE      (1*1024*1024) // heap size 1MB kilobytes
+#define MICROPY_HEAP_SIZE      (128*1024) // heap size 128K kilobytes
 
 
 #define MP_STATE_PORT MP_STATE_VM

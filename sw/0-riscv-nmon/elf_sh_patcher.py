@@ -80,19 +80,25 @@ def main():
 
     with open(args.elf,"rb") as f:
         elf = ELFFile(f)
-        text = elf.get_section_by_name(".patch")
-        code = bytearray(text.data())
-        patch_space = text["sh_addr"]
-        patch_offset = text["sh_offset"]
-        print(f"{patch_space:08x}",f"{patch_offset:08x}")
+        patch = elf.get_section_by_name(".patch")
+        data = bytearray(patch.data())
+        patch_space = patch["sh_addr"]
+        patch_offset = patch["sh_offset"]
+        print(f"patch_space:{patch_space:08x}",f"patch_offset:{patch_offset:08x}")
         text = elf.get_section_by_name(".text")
         code = bytearray(text.data())
         text_addr = text["sh_addr"]
         text_offset = text["sh_offset"]
-        print(f"{text_addr:08x}")
-        idx=0
+        print(f"text_addr:{text_addr:08x}",f"text_offset:{text_offset:08x}")
+        idy=0
         insert_addr=patch_space
-        for insn in md.disasm(code, text_addr):
+        read_text=text_addr
+        for idx in range(len(code)//4):
+            val = struct.unpack("<I",code[idx*4:idx*4+4])[0]
+            if val != 0:
+                break
+            read_text+=4
+        for insn in md.disasm(code[read_text:], text_addr+(read_text)):
             if insn.mnemonic == "sh":
                 print(hex(insn.address), insn.mnemonic, insn.op_str)
                 print(insn.mnemonic, insn.op_str)
@@ -137,7 +143,7 @@ def main():
                         file.write(inst)
 
                     with open(args.elf,"r+b") as file:
-                        compile_asm(ASM_TEMPLATE.format(name=f"sh_{idx}",code=code),args.cross_compiler)
+                        compile_asm(ASM_TEMPLATE.format(name=f"sh_{idy}",code=code),args.cross_compiler)
                         with open("patch.bin", "rb") as f:
                             replacement = f.read()
                         inst = encode_j(
@@ -151,7 +157,7 @@ def main():
                         file.write(replacement)
 
                     insert_addr+=32
-                    idx+=1
+                    idy+=1
                 
                 
 

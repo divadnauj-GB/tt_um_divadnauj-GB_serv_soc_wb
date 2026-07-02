@@ -23,13 +23,19 @@ ifdef QEMU
 	
 else ifdef  SPIKE
 	CFLAGS+=-O2 -DSPIKE 
-	BOARD ?=SERVE-wb-soc1
-	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x01800000:0x1000000 --dtb=utils/serv2.dtb 
-	PATCH_SH=
-	DEFINT16=
+	BOARD ?=serv
+	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x00010000:0x4000000 --dtb=utils/serv2.dtb 
+	ifdef PATCH
+		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
+		DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
+	else
+		PATCH_SH=
+		DEFINT16=
+	endif
 else
 	CFLAGS+=-O2
-	BOARD ?=SERVE-wb-soc
+	#BOARD ?=SERVE-wb-soc
+	BOARD ?=serv
 	ifdef PATCH
 		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
 		DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
@@ -121,6 +127,13 @@ $(BUILD)/firmware.bin: $(BUILD)/firmware.elf
 	$(CROSS_COMPILE)nm -s $(BUILD)/firmware.elf >> $(BUILD)/nm.log
 
 
+pre-flash: $(BUILD)/firmware.bin
+	cp $(BUILD)/firmware.bin $(BUILD)/firmware-pre-flash.bin
+	dd if=../0-riscv-nmon/serv-e-wb-soc_25MHz_115200.bin of=$(BUILD)/firmware-pre-flash.bin bs=1 seek=0 conv=notrunc
+	echo "@000000" > firmware-f.hex
+	hexdump -v -e '"" 32/1 "%02x " "\n"' $(BUILD)/firmware-pre-flash.bin >> firmware-f.hex
+	truncate -s 16M $(BUILD)/firmware-pre-flash.bin
+
 $(BUILD)/firmware.nmon: $(BUILD)/firmware.bin
 	@START_ADDR=$$($(CROSS_COMPILE)nm $(BUILD)/firmware.elf | awk '/ _start/ {print $$1}'); \
 	echo "Start address: 0x$$START_ADDR"; \
@@ -131,7 +144,6 @@ $(BUILD)/firmware.nmon: $(BUILD)/firmware.bin
 	xxd -e -c 4 -o 0x$$START_ADDR -g 4 $< | awk '{gsub(":", "", $$1); print ""$$1$$2""}'  > .tmp ; 
 	xxd -e -c 4 -o 0x$$START_ADDR -g 4 $< | awk '{gsub(":", "", $$1); print ""$$2""}'  > .tmp2 ; 
 	echo "@000000" > firmware-f.hex
-
 	hexdump -v -e '"" 32/1 "%02x " "\n"' $< >> firmware-f.hex
 
 
