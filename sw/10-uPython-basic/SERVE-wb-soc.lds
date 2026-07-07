@@ -8,14 +8,11 @@ SECTIONS {
         KEEP(*(.text.init));
         *(.text.trap_vec); 
         *(.text.reset); 
-        *(.text .text.*);
-    }
-    /*This region is used to allocate trampoline functions to patch SH instructions*/
-    .patch : ALIGN(4){
-        _spatch = .;
-        KEEP(*(.patch))
-        . += 1*1024; /* 5K */
-        _epatch = .;
+        *(.text );
+        KEEP(*(.text.patch)) /*1 KB for patch*/
+        . += 1016; 
+        . = ALIGN(4);
+        *(.text.*)
     }
 
     .rodata : ALIGN(4) {

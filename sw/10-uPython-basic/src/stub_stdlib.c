@@ -262,7 +262,7 @@ char *_sbrk (int delta)
 	return ptr;
 }
 
-__attribute__((section(".patch")))
+__attribute__((section(".text.patch")))
 void patch_function(void) {
     __asm__ volatile("ebreak");
 }

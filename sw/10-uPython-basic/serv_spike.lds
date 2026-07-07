@@ -5,7 +5,7 @@ STACK_SIZE = 1M; /* 32 kB stack size */
 
 MEMORY
 {
-    brom (rx): ORIGIN = 0x00000000, LENGTH = 16M
+    brom (rx): ORIGIN = 0x00010000, LENGTH = 16M
     sram (rwx): ORIGIN = 0x01000000, LENGTH = 16M
     peripherals (rw): ORIGIN = 0x90000000, LENGTH = 0x8000000
 }

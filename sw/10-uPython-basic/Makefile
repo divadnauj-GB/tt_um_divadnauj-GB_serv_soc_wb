@@ -23,7 +23,7 @@ ifdef QEMU
 	
 else ifdef  SPIKE
 	CFLAGS+=-O2 -DSPIKE 
-	BOARD ?=serv
+	BOARD ?=serv_spike
 	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x00010000:0x4000000 --dtb=utils/serv2.dtb 
 	ifdef PATCH
 		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-

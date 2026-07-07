@@ -3,6 +3,7 @@ from elftools.elf.elffile import ELFFile
 from capstone import *
 from capstone.riscv import *
 import os
+import subprocess
 
 md = Cs(CS_ARCH_RISCV, CS_MODE_RISCV32)
 md.detail = True
@@ -78,27 +79,40 @@ def main():
 
     args = parser.parse_args()
 
+    cmd=f"{args.cross_compiler}nm {args.elf} | awk '/ _start/'"
+    result = subprocess.check_output(cmd, shell=True, text=True)
+    _start_addr = int(result.split(" ")[0],16)
+    cmd=f"{args.cross_compiler}nm {args.elf} | awk '/patch_function/'"
+    result = subprocess.check_output(cmd, shell=True, text=True)
+    patch_function_addr = int(result.split(" ")[0],16)
+    print(_start_addr,patch_function_addr)
+    
     with open(args.elf,"rb") as f:
         elf = ELFFile(f)
-        patch = elf.get_section_by_name(".patch")
-        data = bytearray(patch.data())
-        patch_space = patch["sh_addr"]
-        patch_offset = patch["sh_offset"]
-        print(f"patch_space:{patch_space:08x}",f"patch_offset:{patch_offset:08x}")
+        #patch = elf.get_section_by_name(".patch")
+        #data = bytearray(patch.data())
+        #patch_space = patch["sh_addr"]
+        #patch_offset = patch["sh_offset"]
+        #print(f"patch_space:{patch_space:08x}",f"patch_offset:{patch_offset:08x}")
         text = elf.get_section_by_name(".text")
         code = bytearray(text.data())
         text_addr = text["sh_addr"]
         text_offset = text["sh_offset"]
         print(f"text_addr:{text_addr:08x}",f"text_offset:{text_offset:08x}")
+        
         idy=0
-        insert_addr=patch_space
-        read_text=text_addr
-        for idx in range(len(code)//4):
-            val = struct.unpack("<I",code[idx*4:idx*4+4])[0]
-            if val != 0:
-                break
-            read_text+=4
-        for insn in md.disasm(code[read_text:], text_addr+(read_text)):
+        #insert_addr=patch_space
+        #read_text=text_addr
+        insert_addr=patch_function_addr
+        read_text=_start_addr
+        #for idx in range(len(code)//4):
+        #    val = struct.unpack("<I",code[idx*4:idx*4+4])[0]
+        #    if val != 0:
+        #        break
+        #    read_text+=4
+        if (insert_addr-patch_function_addr)>1024:
+            raise(f"The size of the patch section is too small by {1024-(insert_addr-patch_function_addr)} bytes")
+        for insn in md.disasm(code[_start_addr-text_addr:], _start_addr):
             if insn.mnemonic == "sh":
                 print(hex(insn.address), insn.mnemonic, insn.op_str)
                 print(insn.mnemonic, insn.op_str)
@@ -118,10 +132,10 @@ def main():
                         ops.append(insn.reg_name(op.mem.base))
 
                 file_off = text_offset + (insn.address - text_addr)
-                patch_off = patch_offset + (insert_addr-patch_space)
+                patch_off = text_offset + (insert_addr-text_addr)
 
                 print(f"file_off {file_off:08x}, text_offset:{text_offset:08x}, text_addr:{text_addr:08x}")
-                print(f"patch_off {patch_off:08x}, patch_offset:{patch_offset:08x}, patch_space:{patch_space:08x}")
+                print(f"patch_off {patch_off:08x}, patch_offset:{text_offset:08x}, patch_space:{text_addr:08x}")
 
                 code = f"addi sp,sp,-4\n \
                 sw {ops[0]},0(sp)\n \
