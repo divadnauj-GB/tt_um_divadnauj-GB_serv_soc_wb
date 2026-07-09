@@ -23,7 +23,7 @@ SECTIONS
         . += 1016; 
         . = ALIGN(4);
         *(.text.*);
-    } > sram
+    } > brom
     
 .rodata : {
         . = ALIGN(4);
@@ -33,7 +33,7 @@ SECTIONS
         *(.srodata*);
         . = ALIGN(4);
         _sidata = .;
-    } > sram
+    } > brom
 
 .data : AT ( _sidata ){
         . = ALIGN(4);
@@ -44,7 +44,7 @@ SECTIONS
         *(.sdata .sdata.*)
         . = ALIGN(4);
         _edata = .;
-    } > sram /* "> sram" is the VMA, "> sram" is the LMA */
+    } > sram /* "> sram" is the VMA, "> brom" is the LMA */
 
 .bss (NOLOAD) : {
         . = ALIGN(4);
@@ -65,6 +65,3 @@ SECTIONS
     } > sram
 
 }
-_nmon_outs = 0x00000148;
-debug_ll_getc = 0x0000014C;
-/*PROVIDE ( risc_v_trap_handler = 0x40000010 );*/

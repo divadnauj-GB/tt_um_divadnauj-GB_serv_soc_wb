@@ -74,7 +74,7 @@ def compile_asm(str,cross_compiler):
 def main():
     parser = argparse.ArgumentParser(description="nmon ELF loader patcher")
     parser.add_argument("elf")
-    parser.add_argument("-c","--cross-compiler", default="riscv64-unknown-elf-")
+    parser.add_argument("-c","--cross-compiler", default="riscv32-unknown-elf-")
     parser.add_argument("--verbose", action="store_true")
 
     args = parser.parse_args()

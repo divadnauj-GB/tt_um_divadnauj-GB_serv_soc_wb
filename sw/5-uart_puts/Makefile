@@ -21,7 +21,7 @@ CFLAGS+=$(ARCH)
 
 LDFLAGS +=-T$(LINKERSCRIPT) 
 LDFLAGS +=-nostdlib 
-LDFLAGS +=-Wl,--no-relax 
+LDFLAGS +=-Wl,--no-relax,-Map=$@.map
 
 LDLIBS = -lc -lgcc
 
@@ -69,4 +69,4 @@ application.nmon: application.bin
 
 
 clean:
-	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp *.txt $(OBJS)
+	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp *.txt $(OBJS) *.map *.hex

@@ -26,7 +26,7 @@ CFLAGS+=-MMD
 
 LDFLAGS +=-T$(LINKERSCRIPT) 
 LDFLAGS +=-nostdlib 
-LDFLAGS +=-Wl,--no-relax,--strip-debug,-Bstatic
+LDFLAGS +=-Wl,--no-relax,--strip-debug,-Bstatic,-Map=$@.map
 
 LDLIBS = -lc -lgcc
 

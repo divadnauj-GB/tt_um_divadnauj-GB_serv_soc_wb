@@ -5,7 +5,7 @@ STACK_SIZE = 1M; /* 32 kB stack size */
 
 MEMORY
 {
-    brom (rx):  ORIGIN = 0x00097400, LENGTH = 16M
+    brom (rx):  ORIGIN = 0x001C3400, LENGTH = 16M
     sram (rwx): ORIGIN = 0x01000000, LENGTH = 16M
     peripherals (rw): ORIGIN = 0x90000000, LENGTH = 0x8000000
 }
@@ -23,7 +23,7 @@ SECTIONS
         . += 1016; 
         . = ALIGN(4);
         *(.text.*);
-    } > sram
+    } > brom
     
 .rodata : {
         . = ALIGN(4);
@@ -33,7 +33,7 @@ SECTIONS
         *(.srodata*);
         . = ALIGN(4);
         _sidata = .;
-    } > sram
+    } > brom
 
 .data : AT ( _sidata ){
         . = ALIGN(4);
@@ -44,7 +44,7 @@ SECTIONS
         *(.sdata .sdata.*)
         . = ALIGN(4);
         _edata = .;
-    } > sram /* "> sram" is the VMA, "> sram" is the LMA */
+    } > sram /* "> sram" is the VMA, "> brom" is the LMA */
 
 .bss (NOLOAD) : {
         . = ALIGN(4);
@@ -62,9 +62,9 @@ SECTIONS
         . += STACK_SIZE;
         . = ALIGN(4);
         __stack_top = .;
+        __freertos_irq_stack_top = __stack_top;
     } > sram
 
 }
 _nmon_outs = 0x00000148;
 debug_ll_getc = 0x0000014C;
-/*PROVIDE ( risc_v_trap_handler = 0x40000010 );*/

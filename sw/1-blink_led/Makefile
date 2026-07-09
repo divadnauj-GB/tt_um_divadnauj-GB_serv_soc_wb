@@ -4,7 +4,7 @@ CC=$(CROSS_COMPILE)gcc
 OBJCOPY=$(CROSS_COMPILE)objcopy
 NM=$(CROSS_COMPILE)nm
 ARCH=-march=rv32e_zicsr -mabi=ilp32e
-LINKERSCRIPT=SERVE-wb-soc.lds
+LINKERSCRIPT?=SERVE-wb-soc.lds
 CFLAGS+=$(ARCH) -Wall -Wextra  -std=c11 -ffreestanding
 
 CFLAGS+=-O3
@@ -13,7 +13,7 @@ CFLAGS+=$(ARCH)
 
 LDFLAGS +=-T$(LINKERSCRIPT) 
 LDFLAGS +=-nostdlib 
-LDFLAGS +=-Wl,--no-relax 
+LDFLAGS +=-Wl,--no-relax,-Map=$@.map
 
 LDLIBS = -lc -lgcc
 
@@ -59,4 +59,4 @@ application.nmon: application.bin
 
 
 clean:
-	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp* *.txt *.hex *.log 
+	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp* *.txt *.hex *.log  *.map

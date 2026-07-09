@@ -28,7 +28,7 @@ CFLAGS+=-MMD
 
 LDFLAGS +=-T$(LINKERSCRIPT) 
 LDFLAGS +=-nostdlib 
-LDFLAGS +=-Wl,--no-relax,--strip-debug,-Bstatic
+LDFLAGS +=-Wl,--no-relax,--strip-debug,-Bstatic,-Map=$@.map
 
 LDLIBS = -lc -lgcc
 
@@ -104,5 +104,5 @@ $(PROJECT).nmon: ./bin/$(PROJECT).bin
 
 
 clean:
-	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp *.txt *.hex
+	rm -f *.o *.elf *.img *.bin *.nmon symbols.txt .tmp *.txt *.hex *.map
 	rm -rf bin

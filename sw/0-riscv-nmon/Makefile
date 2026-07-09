@@ -1,6 +1,6 @@
 PROJECT = serv-e-wb-soc_25MHz_115200
 FLASH_SIZE = 16777216
-CROSS_COMPILE=riscv64-unknown-elf-
+CROSS_COMPILE=riscv32-unknown-elf-
 
 CC=$(CROSS_COMPILE)gcc
 OBJCOPY=$(CROSS_COMPILE)objcopy
