@@ -117,6 +117,7 @@ void gc_collect(void) {
 }
 #endif
 
+#if !MICROPY_VFS
 mp_lexer_t *mp_lexer_new_from_file(qstr filename) {
     mp_raise_OSError(MP_ENOENT);
 }
@@ -124,6 +125,7 @@ mp_lexer_t *mp_lexer_new_from_file(qstr filename) {
 mp_import_stat_t mp_import_stat(const char *path) {
     return MP_IMPORT_STAT_NO_EXIST;
 }
+#endif
 
 void MP_NORETURN __fatal_error(const char *msg) {
     printf("Fatal error: %s\n", msg);

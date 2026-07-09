@@ -13,6 +13,7 @@ QSTR_DEFS = qstrdefsport.h
 
 MICROPY_ROM_TEXT_COMPRESSION ?= 0
 
+CROSS_COMPILE ?= riscv32-unknown-elf-
 
 ifdef QEMU
 	CFLAGS+=-O2 -DQEMU 
@@ -26,7 +27,7 @@ else ifdef  SPIKE
 	BOARD ?=serv_spike
 	SIM=~/spike/bin/spike --isa=rv32e_zicsr -m0x00010000:0x4000000 --dtb=utils/serv2.dtb 
 	ifdef PATCH
-		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
+		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c $(CROSS_COMPILE)
 		DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
 	else
 		PATCH_SH=
@@ -37,7 +38,7 @@ else
 	#BOARD ?=SERVE-wb-soc
 	BOARD ?=serv
 	ifdef PATCH
-		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c riscv64-unknown-elf-
+		PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py build/firmware.elf -c $(CROSS_COMPILE)
 		DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
 	else
 		PATCH_SH=
@@ -50,7 +51,7 @@ include $(TOP)/py/py.mk
 include $(TOP)/extmod/extmod.mk
 
 
-CROSS_COMPILE ?= riscv64-unknown-elf-
+
 GCC_VERSION = $(word 1, $(subst ., , $(shell $(CC) -dumpversion)))
 INC += -I. -I$(BUILD) -I$(TOP) -I./inc -I./uPython
 
@@ -67,7 +68,7 @@ LDFLAGS +=$(ARCH) $(INC) -nostdlib -ffreestanding -specs=nano.specs --specs=nosy
 
 CXXFLAGS += $(filter-out -std=c99,$(CFLAGS))
 
-LIBS += -lc -lgcc 
+LIBS += -lc -lgcc -lm
 
 # Define the required source files.
 SRC_C = \
@@ -82,6 +83,10 @@ SRC_C = \
 	shared/timeutils/timeutils.c \
 	shared/libc/string0.c \
 	$(BUILD)/_frozen_mpy.c \
+	lib/littlefs/lfs2.c \
+	lib/littlefs/lfs2_util.c \
+	lib/oofatfs/ff.c \
+	lib/oofatfs/ffunicode.c \
     
 
 

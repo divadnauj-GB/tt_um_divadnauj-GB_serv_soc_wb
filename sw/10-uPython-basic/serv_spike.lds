@@ -22,7 +22,7 @@ SECTIONS
         *(.text.reset); 
         *(.text);
         KEEP(*(.text.patch)) /*1 KB for patch*/
-        . += 1016; 
+        . += 1024-8; 
         . = ALIGN(4);
         *(.text.*);
     } > brom

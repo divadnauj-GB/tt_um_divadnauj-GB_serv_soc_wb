@@ -9,8 +9,8 @@
 
 #elif SPIKE
 
-    #define MTIME_BASE_ADDRESS		0xfffffff0
-    #define MTIMECMP_BASE_ADDRESS	0xfffffff0
+    #define MTIME_BASE_ADDRESS		0x9200BFF8
+    #define MTIMECMP_BASE_ADDRESS	0x92004000
 
 #else
 

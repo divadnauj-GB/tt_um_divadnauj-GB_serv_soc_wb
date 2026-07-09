@@ -10,6 +10,7 @@
 #define MICROPY_HELPER_REPL               (1)
 #define MICROPY_MODULE_FROZEN_MPY         (1)
 #define MICROPY_ENABLE_EXTERNAL_IMPORT    (1)
+#define MICROPY_FLOAT_IMPL (MICROPY_FLOAT_IMPL_FLOAT)
 
 //#define MICROPY_DEBUG_NLR        (1)
 //#define MICROPY_DEBUG_PRINTERS   (1)
@@ -29,7 +30,7 @@
 typedef long mp_off_t;
 typedef intptr_t mp_int_t; // must be pointer size
 typedef uintptr_t mp_uint_t; // must be pointer size
-//#define MP_SSIZE_MAX (0x7fffffff)
+#define MP_SSIZE_MAX (0x7fffffff)
 
 // We need to provide a declaration/definition of alloca().
 #include <alloca.h>
@@ -43,8 +44,27 @@ typedef uintptr_t mp_uint_t; // must be pointer size
 
 #define MP_STATE_PORT MP_STATE_VM
 
-#define MICROPY_PY_TIME (0)
-#define MICROPY_VFS              (0)
-#define MICROPY_READER_VFS       (0)
+#define MICROPY_PY_TIME (1)
+#define MICROPY_VFS              (1)
+#define MICROPY_READER_VFS       (MICROPY_VFS)
 #define MICROPY_PY_IO            (0)
 #define MICROPY_PY_OS         (1)
+
+#if MICROPY_VFS==1
+#define MICROPY_VFS_FAT       (1)
+#define MICROPY_VFS_LFS2      (1)
+#define MICROPY_ENABLE_FINALISER (1)
+#define MICROPY_GC_ALLOC_THRESHOLD (1)
+#define MICROPY_PY_BUILTINS_MEMORYVIEW (1)
+#define MICROPY_PY_BUILTINS_FROZENSET               (1)
+#define MICROPY_PY_BUILTINS_EXECFILE                (1)
+#define MICROPY_PY_BUILTINS_HELP (1)
+#define MICROPY_PY_FSTRINGS   (1)
+#define MICROPY_PY_FRAMEBUF   (1)
+#define MICROPY_PY_MICROPYTHON_MEM_INFO (1)
+#define MICROPY_PY_SYS_MAXSIZE (1)
+
+#define MICROPY_FATFS_ENABLE_LFN                (1)
+#define MICROPY_FATFS_LFN_CODE_PAGE             437 /* 1=SFN/ANSI 437=LFN/U.S.(OEM) */
+#define MICROPY_FATFS_RPATH                     (2)
+#endif

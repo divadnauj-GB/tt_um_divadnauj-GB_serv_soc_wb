@@ -1,6 +1,8 @@
 #include <unistd.h>
 #include "py/mpconfig.h"
 #include "soc_uart.h"
+#include "systimer.h"
+#include "lib/oofatfs/ff.h"
 
 // Receive single character, blocking until one is available.
 int mp_hal_stdin_rx_chr(void) {
@@ -21,4 +23,15 @@ void mp_hal_stdout_tx_strn(const char *str, mp_uint_t len) {
     while (len--) {
         uart_putc(*str++);
     }
+}
+
+uint64_t mp_hal_time_ns(void) {
+    uint64_t start_time = get_time();
+    uint64_t elapsed_time = get_time()-start_time;
+    return (elapsed_time*40);
+}
+
+DWORD get_fattime(void) {
+    // TODO: Implement this function. For now, fake it.
+    return ((2025 - 1980) << 25) | ((1) << 21) | ((26) << 16) | ((00) << 11) | ((18) << 5) | (23 / 2);
 }
