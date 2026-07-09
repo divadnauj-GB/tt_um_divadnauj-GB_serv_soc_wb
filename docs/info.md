@@ -101,12 +101,29 @@ echo 'export PATH=/opt/riscv32e/bin:$PATH' >> ~/.bashrc
 > ![alt text](schematic.svg)
 
 
-1. Flash the nmon bootloader: 
+1. Flash the nmon bootloader and try the preloaded examples: 
 
     - Program the flash memory using the [nmon_25MHz.bin](../sw/0-riscv-nmon/nmon_25MHz.bin) bootloader, this step is required to be done only once. You can use any FLASH programer (e.g., serprog).
-    > Eventually further guidelines might be provided regarding options for flashing the bootloader
+    - The bootloader image also contains several preloaded examples that you can execute as follows:
+        - After flashing the bootloader start the SoC until you get the bootloader prompt `nmon> `
+        - Type the command `gxxxxxxxx` where `xxxxxxxx` corresponds to the address where the program resides accordint to the following table:
 
-2. Compile the program
+            |||
+            |-|-|
+            |Test App| Address |
+            |MicroPython|00000400|
+            |blink led  |00065400|
+            |gpio echo  |00097400|
+            |uart stub 1|000c9400|
+            |uart stub 2|000fb400|
+            |uart puts  |0012d400|
+            |uart getc  |0015f400|
+            |systmr irq |00191400|
+            |FreeRTOS demo1|001c3400|
+            |||
+
+
+2. You can also compile and load any program
     ```bash
     cd ./sw/1-blink_led
     make clean build nmon
@@ -183,6 +200,6 @@ This design has been proved on an FPGA device via the DE10-nano board. Currently
 
     ```bash
     # you need a python environment that inlcudes the following packages pyelftools, and capstone. 
-    python ./sw/0-riscv-nmon/elf_sh_patcher.py <yourELFfile.elf> -c riscv64-unknown-elf-
+    python ./sw/0-riscv-nmon/elf_sh_patcher.py <yourELFfile.elf> -c riscv32-unknown-elf-
     ```
 After that you can take the final ELF and flash or program you SoC via the bootloader.
