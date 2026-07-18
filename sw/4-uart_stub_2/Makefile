@@ -1,5 +1,10 @@
 CROSS_COMPILE=riscv32-unknown-elf-
 
+ifdef PATCH
+	PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py application.elf -c $(CROSS_COMPILE)
+	DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
+endif
+
 CC=$(CROSS_COMPILE)gcc
 OBJCOPY=$(CROSS_COMPILE)objcopy
 NM=$(CROSS_COMPILE)nm
@@ -39,6 +44,7 @@ nmon: application.nmon
 application.elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $@ 
 	$(CROSS_COMPILE)size -A -x $@
+	$(PATCH_SH)
 
 START_ADDR := $(shell $(NM) *.elf | awk '/ _start/ {print $$1}')
 

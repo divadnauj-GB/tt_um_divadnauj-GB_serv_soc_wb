@@ -60,7 +60,7 @@
 #define __riscv_32e
 
 // Comment out the following line if ENABLE_CSR_CUSTOM_TRAP = 0 in Verilog RTL
-#define ENABLE_CSR_CUSTOM_TRAP
+//#define ENABLE_CSR_CUSTOM_TRAP
 
 #ifdef ENABLE_CSR_CUSTOM_TRAP
 #define csr_custom_trap 0x7C2

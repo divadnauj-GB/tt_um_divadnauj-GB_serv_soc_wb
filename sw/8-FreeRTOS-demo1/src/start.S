@@ -100,6 +100,8 @@ clear_bss:
 	addi	a0,a0,1
 	beq		x0,x0,clear_bss
 finish_bss:
+
+
 	la      a0,_sdata
 	la      a1,_edata
 	la      a2,_sidata

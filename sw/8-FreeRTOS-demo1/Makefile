@@ -4,6 +4,11 @@ QEMU ?=
 CROSS_COMPILE=riscv32-unknown-elf-
 #CROSS_COMPILE=riscv64-unknown-elf-
 
+ifdef PATCH
+	PATCH_SH=python ../0-riscv-nmon/elf_sh_patcher.py bin/FreeRTOS_demo.elf -c $(CROSS_COMPILE)
+	DEFINT16=-D__UINT16_TYPE__=__UINT32_TYPE__ -D__INT16_TYPE__=__INT32_TYPE__ -Duint16_t=uint32_t -Dint16_t=int32_t 
+endif
+
 CC=$(CROSS_COMPILE)gcc
 OBJCOPY=$(CROSS_COMPILE)objcopy
 NM=$(CROSS_COMPILE)nm
@@ -84,6 +89,7 @@ bin/%.o: ../FreeRTOS-Kernel/portable/GCC/RISC-V/%.S
 ./bin/$(PROJECT).elf: $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJS) $(LDLIBS) -o $@ 
 	$(SIZE) -A -x $@
+	$(PATCH_SH)
 	$(OBJDUMP) -S -d ./bin/$(PROJECT).elf > app.txt
 
 #START_ADDR := $(shell $(NM) *.elf | awk '/ _start/ {print $$1}')

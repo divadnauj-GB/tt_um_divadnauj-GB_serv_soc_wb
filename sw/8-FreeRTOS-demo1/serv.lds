@@ -15,9 +15,8 @@ SECTIONS
 
 .text : {
         . = ALIGN(4);
-        KEEP(*(.text.init)); 
-        *(.text.trap_vec); 
-        *(.text.reset); 
+        KEEP(*(.text.reset_vec));
+        *(.text.trap_vec);
         *(.text);
         KEEP(*(.text.patch)) /*1 KB for patch*/
         . += 1016; 
